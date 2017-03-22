@@ -1,7 +1,8 @@
-import numpy as np
 import cython
+import numpy as np
+cimport numpy as np
 
-def _get_index(int size, int i, int j):
+cdef int _get_index(int size, int i, int j):
 	"""Get the index inside the spiral.
 
 	In other words, we compute in which square belong the point of coordinates
@@ -24,12 +25,12 @@ def _get_index(int size, int i, int j):
 	y = min(j, size - 1 - j)
 	return min(x, y)
 
-def _start_number(int size, int k):
+cdef int _start_number(int size, int k):
 	"""This functions returns the top left number (or the start number) of the
 	square k. Start at 1."""
 	return 4 * k * (size - k) + 1
 
-def _get_number(int size, int i, int j):
+cdef int _get_number(int size, int i, int j):
 	"""Description incoming!
 
 	Args:
@@ -66,12 +67,14 @@ def goal_generator(int size, int dim=1):
 		dim (int): the dimension of your output, choose between 1 or 2
 			dimensions.
 	Returns:
-		goal (array): the generated solution.
+		goal (np.ndarray): the generated solution.
 	"""
-	goal = np.ndarray(size * size, dtype=np.uint64)
 	if size < 3:
 		raise Exception("Can't generate goal for puzzle lower than 2.")
 	assert(dim == 1 or dim == 2), "Dimension should be 1 or 2."
+	cdef np.ndarray[np.uint64_t, ndim=1] goal = np.zeros(size * size, dtype=np.uint64)
+	cdef int i
+	cdef int j
 	for i in range(size):
 		for j in range(size):
 			number = _get_number(size, i, j) if _get_number(size, i, j) != size * size else 0
