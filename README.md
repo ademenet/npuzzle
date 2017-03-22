@@ -15,3 +15,13 @@ Then:
 ```
 python3 main.py
 ```
+
+## Tips
+
+With `Cython`, use:
+
+```
+cython file.pyx -a
+```
+
+To generate `.html` file with Cython's annotation telling you where your program is taking time.
