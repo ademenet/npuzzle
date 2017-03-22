@@ -1,6 +1,3 @@
-import cython
-import numpy as np
-import heapq
 from goal_generator import goal_generator
 
 # TODO implementer 3 heuristiques qui ont du sens
@@ -12,7 +9,7 @@ import time
 
 def main():
 	start = time.time()
-	result = goal_generator(5)
+	result = goal_generator(9000, 1)
 	end = time.time()
 	print(result)
 	print("total time exec: {}".format(end - start))
