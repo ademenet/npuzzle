@@ -1,3 +1,5 @@
+import numpy as np
+
 def _get_index(size, i, j):
 	"""Get the index inside the spiral.
 
@@ -21,8 +23,37 @@ def _get_index(size, i, j):
 
 def _start_number(size, k):
 	"""This functions returns the top left number (or the start number) of the
-	square k."""
+	square k. Start at 1."""
 	return 4 * k * (size - k) + 1
+
+def _get_number(size, i, j):
+	"""Description incoming!
+
+	Args:
+		size (int):
+		i (int):
+		j (int):
+
+	Returns:
+		number (int):
+	"""
+	k = _get_index(size, i, j)
+	start = _start_number(size, k)
+	offset = 0
+	if i == k:
+		offset += j - k
+	else:
+		offset += size - 1 - k - k
+		if j == size - 1 - k:
+			offset += i - k
+		else:
+			offset += size - 1 - k - k
+			if i == size - 1 - k:
+				offset += size - 1 - k - j
+			else:
+				offset += size - 1 - k - k
+				offset += size - 1 - k - i
+	return start + offset
 
 def goal_generator(size, dim=1):
 	"""This class generates the N-puzzle goal for the A star algorithm.
@@ -37,4 +68,14 @@ def goal_generator(size, dim=1):
 	if size < 3:
 		raise Exception("Can't generate goal for puzzle lower than 2.")
 	assert(dim == 1 or dim == 2), "Dimension should be 1 or 2."
-	
+	goal = np.ndarray(size * size)
+	for i in range(size):
+		for j in range(size):
+			number = _get_number(size, i, j) if _get_number(size, i, j) != size * size else 0
+			goal[i * size + j] = number
+	if dim == 1:
+		return goal
+	else:
+		return np.reshape(goal, (size, size))
+
+print(goal_generator(10, 2))
