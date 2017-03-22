@@ -15,6 +15,7 @@ def retracePath(c):
     return path
 
 def solve(graph, current, end):
+	neighbors = [-3, -1, 1, 3]
 	open_set = set()
 	close_set = set()
 	open_list = []
