@@ -48,39 +48,46 @@ def manhattan(current, goal):
 	""""""
 	return np.sum(np.abs(np.subtract(current, goal)))
 
+# TODO : comparaison dans solve semble ne pas marcher, regarder pourquoi
+
 def solve(start, goal, size):
-	open_set = [] # tuple des 'routes' a explorer
-	close_set = [] # tuple des 'routes' explores et plus valable
-	# open_list = [] # liste des etats en cours # test sans
-	heapq.heappush(open_set, (0, start))
-	# heapq.heappush(open_list, (0, start)) # test sans
-	# open_set.append((0, start)) # On ajoute le current dans la liste
-	# open_list.append((0, start)) # on initialise ici aussi
-	while open_set:
-		current = heapq.heappop(open_set)
-		heapq.heappush(close_set, current)
-		print("current[1] = {}".format(current[1]))
+	# Using set() instead of list is clever, because it's O(1) search time
+	# whereas list are O(n). In fact, Python is using __hash__ object to
+	# go faster. If you need documentation:
+	# https://docs.python.org/3/reference/datamodel.html#object.__hash__
+	# http://effbot.org/zone/python-hash.htm
+	# https://en.wikipedia.org/wiki/Hash_tree
+	# Thus we'll use these set in order to compare the current state with our
+	# open list and closed list.
+	open_list = set()
+	closed_list = set()
+	# We still need a list to initialize our binary min heap.
+	heap = []
+	heapq.heappush(heap, (0, start))
+	open_list.add(tuple(start))
+	print(np.reshape(start, (3,3)))
+	while open_list:
+		current = heapq.heappop(heap)
+		closed_list.add(tuple(current[1]))
+		print(current[1])
 		if current[1] == goal:
 			print("END!")
+			return
 			# return retracePath(current)
-		# open_set.remove(current) # on retire de la liste a explorer et on met dans la liste exploree
-		# close_set.append(current)
+		open_list.remove(tuple(current[1]))
+		closed_list.add(tuple(current[1]))
 		for state in neighbors(size, current[1]): # on parcourt les possibilites
-			heuristic = manhattan(current[1], goal)
-			print("heuristic = {}".format(heuristic))
-
-			if state not in close_set: # si on est pas deja passe par la hop !
+			if tuple(state) not in closed_list: # si on est pas deja passe par la hop !
+				heuristic = manhattan(current[1], goal)
 				# tile.H = manhattan(goal.x, goal.y, tile.x, tile.y)
-				if state not in open_set: # si jamais explore, ajouter a la liste a explorer
-					# open_set.append((heuristic, state))
-					print(type(state))
-					heapq.heappush(open_set, (heuristic, state.tolist())) # on fout tout avec lheuristic en classement
+				if tuple(state) not in open_list: # si jamais explore, ajouter a la liste a explorer
+					open_list.add(tuple(state))
+					heapq.heappush(heap, (heuristic.item(), state.tolist())) # on fout tout avec lheuristic en classement
 				# tile.parent = current # plus on sauvegarde le parent
-	return open_list
-
+	return
 # start = [1, 3, 2]
 # end = [1, 2, 3]
 # solve(neighbors, current, end)
-start = [4, 3, 5, 0, 1, 6, 2, 7, 8]
+start = [6, 5, 4, 1, 0, 8, 7, 2, 3]
 goal = [1, 2, 3, 8, 0, 4, 7, 6, 5]
 solve(start, goal, 3)
