@@ -59,7 +59,7 @@ cdef int _get_number(int size, int i, int j):
 				offset += size - 1 - k - i
 	return start + offset
 
-def goal_generator(int size, int dim=1):
+def goal_generator(int size, int dim=2):
 	"""This class generates the N-puzzle goal for the A star algorithm.
 
 	Args:
