@@ -51,29 +51,40 @@ def manhattan(current, goal):
 # TODO Garder les parents pour pouvoir afficher le chemin de la solution
 
 def solve(start, goal, size):
-	# Using set() instead of list is clever, because it's O(1) search time
-	# whereas list are O(n). In fact, Python is using __hash__ object to
-	# go faster. If you need documentation:
-	# https://docs.python.org/3/reference/datamodel.html#object.__hash__
-	# http://effbot.org/zone/python-hash.htm
-	# https://en.wikipedia.org/wiki/Hash_tree
-	# Thus we'll use these set in order to compare the current state with our
-	# open list and closed list.
+	"""Solve the puzzle using A* algorithm.
+
+	Args:
+		start ():
+		goal ():
+		size ():
+
+	Returns:
+
+
+	Using set() instead of list is clever, because it's O(1) search time
+	whereas list are O(n). In fact, Python is using __hash__ object to
+	go faster. If you need documentation:
+
+		https://docs.python.org/3/reference/datamodel.html#object.__hash__
+		http://effbot.org/zone/python-hash.htm
+		https://en.wikipedia.org/wiki/Hash_tree
+
+	Thus we'll use these set in order to compare the current state with our
+	open list and closed list.
+	"""
 	open_list = set()
 	closed_list = set()
-	# We still need a list to initialize our binary min heap.
+	# We still need a list to use as our binary min heap.
 	heap = []
+	parent = set()
 	heapq.heappush(heap, (0, start))
 	open_list.add(tuple(start))
-	print(np.reshape(start, (3,3)))
 	while open_list:
 		current = heapq.heappop(heap)
 		closed_list.add(tuple(current[1]))
-		print(current[1])
 		if current[1] == goal:
 			print("END!")
-			return
-			# return retracePath(current)
+			return retracePath(parent)
 		open_list.remove(tuple(current[1]))
 		closed_list.add(tuple(current[1]))
 		for state in neighbors(size, current[1]): # on parcourt les possibilites
@@ -83,6 +94,8 @@ def solve(start, goal, size):
 				if tuple(state) not in open_list: # si jamais explore, ajouter a la liste a explorer
 					open_list.add(tuple(state))
 					heapq.heappush(heap, (heuristic.item(), state.tolist())) # on fout tout avec lheuristic en classement
+					# TESTING
+					parent.add(tuple((tuple(state), tuple(current[1]))))
 				# tile.parent = current # plus on sauvegarde le parent
 	return
 # start = [1, 3, 2]
@@ -94,4 +107,4 @@ def solve(start, goal, size):
 start = [8,1,7,5,4,6,2,3,0]
 
 goal = [1, 2, 3, 8, 0, 4, 7, 6, 5]
-solve(start, goal, 3)
+parent = solve(start, goal, 3)
