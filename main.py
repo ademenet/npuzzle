@@ -2,8 +2,23 @@ from goal_generator import goal_generator
 from a_star import solve
 
 # TODO implementer le A*: allmost done
+
 # TODO implementer 3 heuristiques qui ont du sens
-# TODO tester les performances a chaque fois
+# 	TODO manhattan
+#	TODO one other
+#	TODO one other
+
+# TODO faire le retour du nombre de opened states
+# TODO faire le retour du nombre de states en memoire durant la recherche (opened + closed)
+# TODO faire le retour du nombre de moves qu'il a fallut
+# TODO faire le retour des differents etats qui menent a la solution
+
+# TODO faire un parser
+# TODO faire un detecteur de solvalbilite
+
+# TODO fournir differntes maps pour les tests de la correction
+
+# TODO bonuses
 
 import time
 
