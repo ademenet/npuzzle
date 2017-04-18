@@ -12,10 +12,12 @@ cdef int _get_index(int size, int i, int j):
 		0 1 1 0
 		0 1 1 0
 		0 0 0 0
+
 	Args:
 		size (int): puzzle size.
 		i (int): coordinate.
 		j (int): coordinate.
+
 	Returns:
 		square number (int) of the point belongs to.
 	"""
@@ -66,6 +68,7 @@ def goal_generator(int size, int dim=2):
 		size (int): the size of the N-puzzle, should be > 2.
 		dim (int): the dimension of your output, choose between 1 or 2
 			dimensions.
+
 	Returns:
 		goal (np.ndarray): the generated solution.
 	"""

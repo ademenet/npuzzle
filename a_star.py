@@ -20,19 +20,44 @@ def retracePath(c):
 # neighbors renvoit les etats qui se trouvent apres l'etat envoye
 
 def from_1d_to_2d(size, coord_1d):
-	"""Convert 1D coordinates into 2D coordinates from 0 to size - for a square."""
+	"""Convert 1D coordinates into 2D coordinates from 0 to size - for a square.
+
+	Args:
+		size (int): square's size.
+		coord_1d(int): 1 dimension coordinate.
+
+	Returns:
+		i, j (int, int): 2D coordinates with i (equivalent to x) and j (y).
+	"""
 	i = int(coord_1d / size)
 	j = int(coord_1d % size)
 	return i, j
 
 def from_2d_to_1d(size, i, j):
 	"""Convert 2D coordinates into 1D coordinates from 0 to (size - 1) - for a
-	square."""
+	square.
+
+	Args:
+		size (int): square's size.
+		i(int): x equivalent.
+		j(int): y equivalent.
+
+	Returns:
+		coord_1d (int): 1D coordinates.
+	"""
 	return i * size + j
 
 def neighbors(size, current):
-	"""It returns new states from the current state given in argument using a
-	yield generator."""
+	"""This generator eturns new states from the current state given in argument.
+
+	Args:
+		size (int): square's size.
+		current (1D array): this is a current state contains into 1D array.
+
+	Yields:
+		copy (1D array): returns a copy of the possible neighbor, corresponding
+			to one potential move.
+	"""
 	neighbors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
 	index_zero = np.argmin(current)
 	i, j = from_1d_to_2d(size, index_zero)
@@ -45,7 +70,7 @@ def neighbors(size, current):
 			yield copy
 
 def manhattan(current, goal):
-	""""""
+	"""WIP this manhattant implementation is SOOOO wrong!"""
 	return np.sum(np.abs(np.subtract(current, goal)))
 
 # TODO Garder les parents pour pouvoir afficher le chemin de la solution
@@ -54,12 +79,11 @@ def solve(start, goal, size):
 	"""Solve the puzzle using A* algorithm.
 
 	Args:
-		start ():
-		goal ():
-		size ():
+		start (1D array): starting state.
+		goal (1D array): goal state.
+		size (int): square's size.
 
 	Returns:
-
 
 	Using set() instead of list is clever, because it's O(1) search time
 	whereas list are O(n). In fact, Python is using __hash__ object to
@@ -98,13 +122,3 @@ def solve(start, goal, size):
 					parent.add(tuple((tuple(state), tuple(current[1]))))
 				# tile.parent = current # plus on sauvegarde le parent
 	return
-# start = [1, 3, 2]
-# end = [1, 2, 3]
-# solve(neighbors, current, end)
-# start = [6, 5, 4, 1, 0, 8, 7, 2, 3]
-# start = [3,5,0,1,4,2,7,6,8]
-# start = [5,3,7,1,6,2,0,8,4]
-start = [8,1,7,5,4,6,2,3,0]
-
-goal = [1, 2, 3, 8, 0, 4, 7, 6, 5]
-parent = solve(start, goal, 3)

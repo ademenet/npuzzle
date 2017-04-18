@@ -1,18 +1,31 @@
 from goal_generator import goal_generator
+from a_star import solve
 
+# TODO implementer le A*: allmost done
 # TODO implementer 3 heuristiques qui ont du sens
-# TODO implementer le A*
-# TODO implementer la gestion de heap ? Priority Queue ? Heapq ?
 # TODO tester les performances a chaque fois
 
 import time
 
-def main():
-	start = time.time()
-	result = goal_generator(9000, 1)
-	end = time.time()
-	print(result)
-	print("total time exec: {}".format(end - start))
-
 if __name__ == '__main__':
+	# start = [1, 3, 2]
+	# end = [1, 2, 3]
+	# solve(neighbors, current, end)
+	# start = [6, 5, 4, 1, 0, 8, 7, 2, 3]
+	# start = [3,5,0,1,4,2,7,6,8]
+	# start = [5,3,7,1,6,2,0,8,4]
+	start = [8,1,7,5,4,6,2,3,0]
+	# goal = goal_generator(3, 1)
+	# TODO: format goal
+	goal = [1, 2, 3, 8, 0, 4, 7, 6, 5]
+	print("start: {} \ngoal: {}".format(start, goal))
+	parent = solve(start, goal, 3)
+
+	def main():
+		start = time.time()
+		result = goal_generator(3, 1)
+		end = time.time()
+		print(result)
+		print("total time exec: {}".format(end - start))
+
 	main()
