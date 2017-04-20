@@ -81,3 +81,7 @@ Finally, we check if the new state is not in the close_set, otherwise that would
 					heapq.heappush(open_list, (tile.H, tile))
 				tile.parent = current
 ```
+
+## Some useful link that we used
+
+- [Why can't we put python lists into a set?](http://stackoverflow.com/questions/1306631/python-add-list-to-set)
