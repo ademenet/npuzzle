@@ -85,3 +85,31 @@ Finally, we check if the new state is not in the close_set, otherwise that would
 ## Some useful link that we used
 
 - [Why can't we put python lists into a set?](http://stackoverflow.com/questions/1306631/python-add-list-to-set)
+
+## How to set your environment
+
+Check your python version:
+
+```bash
+$ python -V
+```
+
+We are working with `python 3.4.4`. You'll need some packages such as `Cython` and `numpy`. We recommend you to set a `virualenv`. Here is a step by step:
+
+```bash
+# Install Virtualenv
+$ pip install --user virtualenv
+# Set Python 3 for Virtualenv
+$ virtualenv -p python3 envname
+# Start the env to your project folder
+$ python -m venv /path/to/your/project
+# OR
+$ python3 -m venv /path/to/your/project
+# Should be done, now activate the env. Go to you project folder and:
+$ source bin/activate
+# Check your python (should be 3...)
+$ python -V
+# Then install Cython and Numpy
+$ pip install cython
+$ pip install numpy
+```
