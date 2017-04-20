@@ -36,11 +36,11 @@ if __name__ == '__main__':
 	print("start: {} \ngoal: {}".format(start, goal))
 	parent = solve(start, goal, 3)
 
-	def main():
-		start = time.time()
-		result = goal_generator(3, 1)
-		end = time.time()
-		print(result)
-		print("total time exec: {}".format(end - start))
+	# def main():
+	# 	start = time.time()
+	# 	result = goal_generator(3, 1)
+	# 	end = time.time()
+	# 	print(result)
+	# 	print("total time exec: {}".format(end - start))
 
-	main()
+	# main()

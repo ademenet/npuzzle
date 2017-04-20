@@ -7,12 +7,14 @@ from debug import show_tree
 # WIP
 
 def retracePath(c):
-    path = [c]
-    while c.parent is not None:
-        c = c.parent
-        path.append(c)
-    path.reverse()
-    return path
+	print("COUCOU")
+	path = [c]
+	while c.parent is not None:
+	    c = c.parent
+	    path.append(c)
+	path.reverse()
+	print(path)
+    # return path
 
 # TODO ??? remplacer par une structure
 # TODO recoder la fonction heappopm heappush et heapq ???
@@ -94,31 +96,44 @@ def solve(start, goal, size):
 		https://en.wikipedia.org/wiki/Hash_tree
 
 	Thus we'll use these set in order to compare the current state with our
-	open list and closed list.
+	open list and closed list. It optimizes the accessibility, instead of
+	looking into the heap to know if we have allready explored one state.
 	"""
+	# Our two sets, it's easier to use sets than lists because of the hash, it
+	# is only O(1) to find if a state is allready
 	open_list = set()
 	closed_list = set()
 	# We still need a list to use as our binary min heap.
 	heap = []
-	parent = set()
 	heapq.heappush(heap, (0, start))
+	parent = {}
+
 	open_list.add(tuple(start))
+
 	while open_list:
 		current = heapq.heappop(heap)
+
 		closed_list.add(tuple(current[1]))
+
 		if current[1] == goal:
 			print("END!")
-			return retracePath(parent)
+			return retracePath(closed_list)
+
+		# print("current: {}".format(current))
 		open_list.remove(tuple(current[1]))
-		closed_list.add(tuple(current[1]))
+
+
+		# closed_list.add(tuple(current[1]))
 		for state in neighbors(size, current[1]): # on parcourt les possibilites
 			if tuple(state) not in closed_list: # si on est pas deja passe par la hop !
 				heuristic = manhattan(current[1], goal)
 				# tile.H = manhattan(goal.x, goal.y, tile.x, tile.y)
 				if tuple(state) not in open_list: # si jamais explore, ajouter a la liste a explorer
+
 					open_list.add(tuple(state))
+
 					heapq.heappush(heap, (heuristic.item(), state.tolist())) # on fout tout avec lheuristic en classement
 					# TESTING
-					parent.add(tuple((tuple(state), tuple(current[1]))))
+					# parent.add(tuple((tuple(state), tuple(current[1]))))
 				# tile.parent = current # plus on sauvegarde le parent
 	return
