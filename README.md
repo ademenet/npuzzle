@@ -113,3 +113,9 @@ $ python -V
 $ pip install cython
 $ pip install numpy
 ```
+## OR you can do
+
+```bash
+$ pip3 install --user cython
+$ pip3 install --user numpy
+```
