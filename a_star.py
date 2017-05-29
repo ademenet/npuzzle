@@ -50,7 +50,7 @@ def from_2d_to_1d(size, i, j):
 	return i * size + j
 
 def neighbors(size, current):
-	"""This generator eturns new states from the current state given in argument.
+	"""This generator returns new states from the current state given in argument.
 
 	Args:
 		size (int): square's size.
