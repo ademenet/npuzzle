@@ -96,3 +96,6 @@ envname
 pyvenv.cfg
 pip-selfcheck.json
 *.swp
+*.swo
+*.swn
+
