@@ -1,19 +1,42 @@
-import pandas as pd
+import numpy as np
+import sys
 
-def parsing(filename):
-    """This function parses a file into 1D array.
+def parse(filename, verbose=False):
+    """Parse file text into 1D numpy array.
+    
+    Handle multiple type of errors:
+        - blank lines
+        - wrong comments (line do not begin with '#')
+        - wrong size expected
+        - expected size too small (size < 3)
+        - no expected size before description
 
     Args:
-        filename (str): filename path to open.
-
+        filename (str): file text path to open and parse.
+        
     Returns:
-        npuzzle (1D numpy array): our npuzzle, but we don't know yet if it is
-            solvable or not.
+        npuzzle (1D numpy array): n-puzzle, we don't know yet if it is solvable
+	    or not.
     """
-    datas = pd.read_csv(filename, sep=' ', delim_whitespace=True, comment='#')
-    fo = open(filename, "rw+")
-    line = fo.readline()
-    while line:
-        print(line)
-        if 
-    fo.close()
+    size = 0
+    with open(filename, "r") as f:
+        for line in f:
+            if line.strip() == "" or line.strip().isalpha():
+                sys.exit("Wrong file format")
+            if not line.startswith("#"):
+                np_array = np.fromstring(line, dtype=int, sep=' ')
+                if np_array.shape[0] == 1 and size == 0:
+                    size = np_array[0]
+                    npuzzle = np.array([], dtype=int)
+                    if size < 3 : sys.exit("Expected size is too small")
+                    if verbose : print("Expected size: ", size)
+                elif np_array.shape[0] != 1 and size == 0:
+                    sys.exit("No expected size, wrong format")
+                elif size != 0 and np_array.shape[0] == size:
+                    npuzzle = np.concatenate((npuzzle, np_array))
+                else:
+                    sys.exit("Wrong column size")
+    if npuzzle.shape[0] == size * size:
+        return npuzzle
+    else:
+        sys.exit("Wrong row size")
