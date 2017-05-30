@@ -35,8 +35,8 @@ def parse(filename, verbose=False):
                 elif size != 0 and np_array.shape[0] == size:
                     npuzzle = np.concatenate((npuzzle, np_array))
                 else:
-                    sys.exit("Wrong column size")
+                    sys.exit("Wrong size")
     if npuzzle.shape[0] == size * size:
         return npuzzle
     else:
-        sys.exit("Wrong row size")
+        sys.exit("Wrong size")
