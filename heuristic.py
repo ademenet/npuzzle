@@ -1,4 +1,5 @@
 #import cython
+import math
 from a_star import from_1d_to_2d
 
 def find_coord(arr, val,s):
@@ -15,7 +16,7 @@ def find_coord(arr, val,s):
 	i = 0
 	while arr[i] != val:
 		i+=1
-	return list(from_1d_to_2d(s, i))
+	return list(from_1d_to_2d(math.sqrt(s), i))
 
 def distance_2_points(coord_ref, coord):
 	
@@ -29,7 +30,7 @@ def manhattan(state, goal,s):
 		Args:
 			state (int[]) : a puzzle state
 			goal (int[]) : the puzzle goal e.g final state 
-			s (int) : size of the puzzle
+			s (int) : size of the puzzle 
 
 		Returns:
 			heuristic value (int).   
@@ -38,7 +39,8 @@ def manhattan(state, goal,s):
 	i = 0
 	coord_ref = []
 	coord = []
-	for val in range(1, s-1):
+	s=s*s
+	for val in range(1, s):
 		coord_ref = find_coord(goal, val, s)
 		coord = find_coord(state, val, s)
 		heur += distance_2_points(coord_ref, coord)
@@ -68,4 +70,15 @@ def nSwap(state, goal, s):
 			heur += 1
 		tile += 1
 		if tile > 8 : tile = 0
+	return heur
+
+def out_row_column(state, goal, s):
+
+	heur = 0
+	for tile in range(1, s*s):
+		coord = from_1d_to_2d(s, state.index(tile))
+		coord_ref = from_1d_to_2d(s, goal.index(tile))
+		if coord[0] != coord_ref[0]:heur += 1
+		if coord[1] != coord_ref[1]:heur += 1
+
 	return heur
