@@ -1,5 +1,5 @@
 def isSolvable(puzzle):
-	"""Check for each value wether the right hand values are superior.
+	"""Check for each value wether the right hand values are inferior.
 	If true, increment the 'inversion' variable for each superior right hand value found.
 	"""
 	inversion = 0
