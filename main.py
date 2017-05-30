@@ -26,12 +26,6 @@ import sys
 
 import time
 
-def argparseErrorHeuristic(string):
-    print(string)
-    if string.casefold() != "manhattan" or string != "h2" or string != "h3":
-        raise argparse.ArgumentTypeError("This heuristic doesn't exist")
-    return string
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='This software solve n-puzzle using A-star algorithm')
     parser.add_argument('filename', nargs='?',
