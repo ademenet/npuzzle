@@ -37,6 +37,12 @@ def parse(filename, verbose=False):
                 else:
                     sys.exit("Wrong size")
     if npuzzle.shape[0] == size * size:
+        limit = size * size - 1
+        for nb in npuzzle:
+            if nb > limit:
+                sys.exit("Wrong format")
+        if np.sum(np.arange(0, limit)) != np.sum(npuzzle):
+            sys.exit("Wrong format")
         return npuzzle
     else:
         sys.exit("Wrong size")
