@@ -96,7 +96,7 @@ def solve(start, goal, size):
 
                     open_list.add(tuple(state))
 
-                    heapq.heappush(heap, (heuristic.item(), state.tolist())) # on fout tout avec lheuristic en classement
+                    heapq.heappush(heap, (heuristic, state.tolist())) # on fout tout avec lheuristic en classement
                     # TESTING
                     # parent.add(tuple((tuple(state), tuple(current[1]))))
                 # tile.parent = current # plus on sauvegarde le parent
