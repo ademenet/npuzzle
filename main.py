@@ -4,6 +4,7 @@ import argparse
 from parsing import parse 
 from puzzle_generator import puzzle_generator
 import sys
+from isSolvable import isSolvable
 
 # TODO implementer le A*: allmost done
 
@@ -39,6 +40,8 @@ if __name__ == '__main__':
 
     if args['filename'] is not None:
         npuzzle = parse(args['filename']) 
+        if not isSolvable(npuzzle):
+            sys.exit("Puzzle is not solvable")
     else:
         if args['size'] > 2:
             npuzzle = puzzle_generator(args['size'] * args['size'])
