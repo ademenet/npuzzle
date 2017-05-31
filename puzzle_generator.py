@@ -1,5 +1,6 @@
 import random
 from isSolvable import *
+import numpy as np
 
 def puzzle_generator(s):
 	"""Generate a random Solvable sPuzzle"""
@@ -12,5 +13,4 @@ def puzzle_generator(s):
 				rdm = random.randrange(0,s)
 			puzzle[rdm] = cnt
 		if isSolvable(puzzle):
-			return puzzle
-
+			return np.asarray(puzzle, dtype=int)

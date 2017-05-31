@@ -3,7 +3,7 @@ import sys
 
 def parse(filename, verbose=False):
     """Parse file text into 1D numpy array.
-    
+
     Handle multiple type of errors:
         - blank lines
         - wrong comments (line do not begin with '#')
@@ -13,7 +13,7 @@ def parse(filename, verbose=False):
 
     Args:
         filename (str): file text path to open and parse.
-        
+
     Returns:
         npuzzle (1D numpy array): n-puzzle, we don't know yet if it is solvable
 	    or not.
@@ -41,7 +41,7 @@ def parse(filename, verbose=False):
         for nb in npuzzle:
             if nb > limit:
                 sys.exit("Wrong format")
-        if np.sum(np.arange(0, limit)) != np.sum(npuzzle):
+        if np.sum(np.arange(0, limit + 1)) != np.sum(npuzzle):
             sys.exit("Wrong format")
         return npuzzle
     else:

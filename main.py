@@ -1,7 +1,7 @@
 from goal_generator import goal_generator
 from a_star import solve
 import argparse
-from parsing import parse 
+from parsing import parse
 from puzzle_generator import puzzle_generator
 import sys
 from isSolvable import isSolvable
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     if args['filename'] is not None:
-        npuzzle = parse(args['filename']) 
+        npuzzle = parse(args['filename'])
         if not isSolvable(npuzzle):
             sys.exit("Puzzle is not solvable")
     else:
@@ -47,7 +47,17 @@ if __name__ == '__main__':
             npuzzle = puzzle_generator(args['size'] * args['size'])
         else:
             sys.exit("Size is too small")
-    print(npuzzle)
+
+    print("Start: ", npuzzle)
+
+    print("--- Generating goal state")
+    goal = goal_generator(args['size'], dim=1)
+    print("Goal: ", goal)
+
+    print("--- Solving puzzle using A-star")
+    solve(npuzzle, goal, args['size'])
+
+    print("--- END")
     # start = [1, 3, 2]
     # end = [1, 2, 3]
     # solve(neighbors, current, end)

@@ -1,17 +1,17 @@
 #import cython
 import math
-from a_star import from_1d_to_2d
+from utils import *
 
 def find_coord(arr, val,s):
-	"""Find the 2D coordinate of a value in a 1D array 
+	"""Find the 2D coordinate of a value in a 1D array
 
 	Args:
-			arr (int[]) : 1D array
-			val (int) : value to find
-			s (int) : array size
+            arr (int[]) : 1D array
+            val (int) : value to find
+            s (int) : array size
 
-		Returns:
-			2D coordinates array [x,y]
+        Returns:
+            2D coordinates array [x,y]
 	"""
 	i = 0
 	while arr[i] != val:
@@ -19,21 +19,21 @@ def find_coord(arr, val,s):
 	return list(from_1d_to_2d(math.sqrt(s), i))
 
 def distance_2_points(coord_ref, coord):
-	
+
 	return abs(coord_ref[0] - coord[0]) + abs(coord_ref[1] - coord[1])
 
 def manhattan(state, goal,s):
 	"""This is the Manhatthan heuristic.
 
-		SUM(for i from 1 to s-1) : abs(Xgoal - Xstat_i) + abs(Ygoal - Ystat_i)
+        SUM(for i from 1 to s-1) : abs(Xgoal - Xstat_i) + abs(Ygoal - Ystat_i)
 
-		Args:
-			state (int[]) : a puzzle state
-			goal (int[]) : the puzzle goal e.g final state 
-			s (int) : size of the puzzle 
+        Args:
+            state (int[]) : a puzzle state
+            goal (int[]) : the puzzle goal e.g final state
+            s (int) : size of the puzzle
 
-		Returns:
-			heuristic value (int).   
+        Returns:
+            heuristic value (int).
 	"""
 	heur = 0
 	i = 0
@@ -47,15 +47,15 @@ def manhattan(state, goal,s):
 
 def nSwap(state, goal, s):
 	"""n-Swap heuristic
-	   
-		Represent the ‘space’ as a tile and assume you can swap any two tiles.
 
-		Args:
-			state (int[]) : a puzzle state
-			goal (int[]) : the puzzle goal e.g final state 
+        Represent the ‘space’ as a tile and assume you can swap any two tiles.
 
-		Returns:
-			heuristic value (int).   
+        Args:
+            state (int[]) : a puzzle state
+            goal (int[]) : the puzzle goal e.g final state
+
+        Returns:
+            heuristic value (int).
 	"""
 	heur = 0
 	tile = 0
@@ -72,16 +72,16 @@ def nSwap(state, goal, s):
 
 def out_row_column(state, goal, s):
 	""""out of row out of column heuristic
-	
-	 	Number of tiles out of row + Number of tiles out of
-		column
 
-		Args:
-			state (int[]) : a puzzle state
-			goal (int[]) : the puzzle goal e.g final state 
+        Number of tiles out of row + Number of tiles out of
+        column
 
-		Returns:
-			heuristic value (int).		
+        Args:
+            state (int[]) : a puzzle state
+            goal (int[]) : the puzzle goal e.g final state
+
+        Returns:
+            heuristic value (int).
 	"""
 	heur = 0
 	for tile in range(1, s*s):
@@ -91,18 +91,18 @@ def out_row_column(state, goal, s):
 		if coord[1] != coord_ref[1]:heur += 1
 	return heur
 
-def euclidian_distane(state, goal,s):
+def euclidian_distance(state, goal,s):
 	"""This is the euclidian distance heuristic.
 
-		SUM(for i from 1 to s*s-1) : sqrt ((Xgoal - Xstat_i)^2 + abs(Ygoal - Ystat_i)^2)
+        SUM(for i from 1 to s*s-1) : sqrt ((Xgoal - Xstat_i)^2 + abs(Ygoal - Ystat_i)^2)
 
-		Args:
-			state (int[]) : a puzzle state
-			goal (int[]) : the puzzle goal e.g final state 
-			s (int) : size of the puzzle 
+        Args:
+            state (int[]) : a puzzle state
+            goal (int[]) : the puzzle goal e.g final state
+            s (int) : size of the puzzle
 
-		Returns:
-			heuristic value (int).   
+        Returns:
+            heuristic value (int).
 	"""
 	heur = 0
 	i = 0
