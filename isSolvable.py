@@ -57,7 +57,7 @@ def isSolvable(puzzle, size):
 	Returns:
 		boolean: True if solvable, False if not.
 	"""
-	puzzle = _unrollPuzzle(puzzle)
+	puzzle = _unrollPuzzle(puzzle, size)
 	inversion = 0
 	for current in range(len(puzzle) - 1):
 		for i in range(current + 1, len(puzzle)):
