@@ -12,5 +12,5 @@ def puzzle_generator(s):
 			while (puzzle[rdm] != -1):
 				rdm = random.randrange(0,s)
 			puzzle[rdm] = cnt
-		if isSolvable(puzzle):
+		if isSolvable(puzzle, s):
 			return np.asarray(puzzle, dtype=int)

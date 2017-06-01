@@ -17,6 +17,7 @@ def parse(filename, verbose=False):
     Returns:
         npuzzle (1D numpy array): n-puzzle, we don't know yet if it is solvable
 	    or not.
+        size (int): size of the puzzle.
     """
     size = 0
     with open(filename, "r") as f:
@@ -43,6 +44,6 @@ def parse(filename, verbose=False):
                 sys.exit("Wrong format")
         if np.sum(np.arange(0, limit + 1)) != np.sum(npuzzle):
             sys.exit("Wrong format")
-        return npuzzle
+        return npuzzle, size
     else:
         sys.exit("Wrong size")
