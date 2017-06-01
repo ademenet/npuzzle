@@ -72,16 +72,25 @@ def solve(start, goal, size):
     heapq.heappush(heap, (0, start))
     parent = {}
 
+    # Variables asked by the subject:
+    stats = {'time_complexity': 1, # Total number of states ever selected in open list
+             'size_complexity': 0, # Maximum number of states represented at the same time in lists
+             'moves': 0} # Number of moves required to transition from first state to goal state
+
     open_list.add(tuple(start))
 
     while open_list:
         current = heapq.heappop(heap)
+        # print("current: ", current) # Debug
 
         closed_list.add(tuple(current[1]))
 
         if np.array_equal(current[1], goal):
-            print("END!")
-            return retracePath(closed_list)
+            print("END of game!")
+            print("Time complexity: ", stats['time_complexity'])
+            stats['size_complexity'] = len(open_list) + len(closed_list)
+            print("Size complexity: ", stats['size_complexity'])
+            return
 
         # print("current: {}".format(current))
         open_list.remove(tuple(current[1]))
@@ -91,10 +100,12 @@ def solve(start, goal, size):
         for state in neighbors(size, current[1]): # on parcourt les possibilites
             if tuple(state) not in closed_list: # si on est pas deja passe par la hop !
                 heuristic = manhattan(current[1], goal, size)
+                # print("heuristic: ", heuristic) # Debug
                 # tile.H = manhattan(goal.x, goal.y, tile.x, tile.y)
                 if tuple(state) not in open_list: # si jamais explore, ajouter a la liste a explorer
 
                     open_list.add(tuple(state))
+                    stats['time_complexity'] += 1
 
                     heapq.heappush(heap, (heuristic, state.tolist())) # on fout tout avec lheuristic en classement
                     # TESTING
