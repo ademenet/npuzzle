@@ -2,15 +2,23 @@ import random
 from isSolvable import *
 import numpy as np
 
-def puzzle_generator(s):
-	"""Generate a random Solvable sPuzzle"""
+def puzzle_generator(size):
+	"""Generate a random solvable n-puzzle.
+
+	Args:
+		size (int): size of the edge (not the total square).
+
+	Returns:
+		npuzzle solvable (1D numpy array).
+	"""
 	random.seed()
+	limit = size * size
 	while True :
-		puzzle = [-1] * s
-		rdm = random.randrange(0,s)
-		for cnt in range (0,s):
+		puzzle = [-1] * limit
+		rdm = random.randrange(0, limit)
+		for cnt in range (0, limit):
 			while (puzzle[rdm] != -1):
-				rdm = random.randrange(0,s)
+				rdm = random.randrange(0, limit)
 			puzzle[rdm] = cnt
-		if isSolvable(puzzle, s):
+		if isSolvable(puzzle, size):
 			return np.asarray(puzzle, dtype=int)

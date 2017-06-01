@@ -12,6 +12,11 @@ from isSolvable import isSolvable
 # TODO faire le retour du nombre de moves qu'il a fallut
 # TODO faire le retour des differents etats qui menent a la solution
 
+# TODO accelerer avec Cython et des optis python ! Cest soit lent : environ 1 min pour un 3 * 3, soit < 1 sec pour les plus facile, il faut etre a 10 sec
+
+# BUG Parfois il ne sort pas par la sortie qui matche avec le final state, jai teste que sur des puzzles generes aleatoirement
+# BUG Time and Size complexity sont pas bons, enfin, il faut verifier ce que cest exactement car il y a toujours 1 d'ecart
+
 def _argparser():
     """Parse arguments using argparse library, returns a dictionnary with values."""
     parser = argparse.ArgumentParser(description='This software solve n-puzzle using A-star algorithm')
@@ -28,32 +33,41 @@ def _argparser():
 
 def main():
     args = _argparser()
+    stats = {
+        'parsing': 0,
+        'solving': 0,
+    }
 
     if args['filename'] is not None:
         start = timer()
         npuzzle, size = parse(args['filename'])
         end = timer()
-        if args['stats']: print("Parsing took: ", end - start, " s")
-        if not isSolvable(npuzzle, size):
+        stats['parsing'] = end - start
+        if isSolvable(npuzzle, size):
             sys.exit("Puzzle is not solvable")
     else:
         if args['size'] > 2:
-            npuzzle = puzzle_generator(args['size'] * args['size'])
+            size = args['size']
+            npuzzle = puzzle_generator(size)
         else:
             sys.exit("Size is too small")
 
     print("Initial state: ", npuzzle)
 
     print("--- Generating goal state")
-    goal = goal_generator(args['size'], dim=1)
+    goal = goal_generator(size, dim=1)
     print("Goal state: ", goal)
 
     print("--- Solving puzzle using A-star")
     start = timer()
     solve(npuzzle, goal, args['size'])
     end = timer()
-    if args['stats']: print("Solving took: ", end - start, " s")
+    stats['solving'] = end - start
 
+    if args['stats']:
+        print("Parsing took {} s. and solving {} s. for a total of {} s.".format(stats['parsing'],
+                                                                              stats['solving'],
+                                                                              stats['parsing'] + stats['solving']))
     print("--- END")
 
 if __name__ == '__main__':
