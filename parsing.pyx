@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import cython
 
 def parse(filename, verbose=False):
     """Parse file text into 1D numpy array.
