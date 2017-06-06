@@ -23,11 +23,12 @@ def _argparser():
     parser.add_argument('filename', nargs='?',
                         type=str, default=None,
                         help='text file describing the n-puzzle initial state')
+    # parser.add_argument('-h', '--heuristic', help='choose your heuristic')
     parser.add_argument('-h1', '--manhattan', action='store_true', help='choose manhattan heuristic')
     parser.add_argument('-h2', '--nswap', action='store_true', help='choose n-swap heuristic')
     parser.add_argument('-h3', '--euclidean', action='store_true', help='choose euclidean heuristic')
     parser.add_argument('-s', '--size', type=int, default=3, help='choose a particular size to random generated n-puzzle')
-    parser.add_argument('-st', '--stats', action='store_true', default=False, help='display the timer stats for the principal functions')
+    parser.add_argument('-t', '--timer', action='store_true', default=False, help='display the timer stats for the principal functions')
     args = vars(parser.parse_args())
     return args
 
@@ -43,7 +44,7 @@ def main():
         npuzzle, size = parse(args['filename'])
         end = timer()
         stats['parsing'] = end - start
-        if isSolvable(npuzzle, size):
+        if not isSolvable(npuzzle, size):
             sys.exit("Puzzle is not solvable")
     else:
         if args['size'] > 2:
@@ -64,10 +65,10 @@ def main():
     end = timer()
     stats['solving'] = end - start
 
-    if args['stats']:
+    if args['timer']:
         print("Parsing took {} s. and solving {} s. for a total of {} s.".format(stats['parsing'],
-                                                                              stats['solving'],
-                                                                              stats['parsing'] + stats['solving']))
+                                                                                 stats['solving'],
+                                                                                 stats['parsing'] + stats['solving']))
     print("--- END")
 
 if __name__ == '__main__':
