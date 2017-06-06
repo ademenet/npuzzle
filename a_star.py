@@ -22,33 +22,35 @@ class Node:
 
     def __eq__(self, other):
         """Compare only if state (1D numpy array) is equal to other."""
-        print("__eq__")
+        # print("__eq__")
         # return isinstance(other, Node) and self.state == other.state
         return np.array_equal(self.state, other)
         # return hash(self.state) == hash(other)
 
     def __hash__(self):
-        print("__hash__")
+        # print("__hash__")
         return hash(tuple(self.state))
 
     def __lt__(self, other):
-        print("__lt__")
+        # print("__lt__")
         return self.cost < other.cost
 
-    def __iter__(self):
-        return self
+    # def __iter__(self):
+    #     return self
 
-def _retracePath(c):
+def _retracePath(state):
     """Display all the states from initial to goal.
     """
-    # path = [c]
-    # while c.parent is not None:
-    #     c = c.parent
-    #     path.append(c)
+    # path = []
+    while state is not None:
+    # for c in state.items():
+        # c = c.parent
+        # path.append(c)
     # path.reverse()
-    paths = numpy.array(list(c))
-    for state in paths:
-        print(state.reshape(3, 3))
+    # paths = numpy.array(list(c))
+    # for state in paths:
+        print(state.state.reshape(3, 3))
+        state = state.parent
     # return path
 
 def _neighbors(size, current):
@@ -116,11 +118,12 @@ def solve(start, goal, size):
     while open_list:
         current = heapq.heappop(heap)
         closed_list.add(current[1])
-        if current == goal:
+        if np.array_equal(current[1].state, goal):
             print("Reach the goal")
             print("Time complexity: ", stats['time_complexity'])
             stats['size_complexity'] = len(open_list) + len(closed_list)
             print("Size complexity: ", stats['size_complexity'])
+            _retracePath(current[1])
             return
         open_list.remove(current[1])
 
