@@ -2,11 +2,12 @@ import random
 from isSolvable import *
 import numpy as np
 
-def puzzle_generator(size):
+def puzzle_generator(size, goal):
 	"""Generate a random solvable n-puzzle.
 
 	Args:
 		size (int): size of the edge (not the total square).
+		goal (1D numpy array): the goal to reach, e.g final puzzle state
 
 	Returns:
 		npuzzle solvable (1D numpy array).
@@ -20,5 +21,5 @@ def puzzle_generator(size):
 			while (puzzle[rdm] != -1):
 				rdm = random.randrange(0, limit)
 			puzzle[rdm] = cnt
-		if isSolvable(puzzle, size):
+		if isSolvable(puzzle, goal, size):
 			return np.asarray(puzzle, dtype=int)

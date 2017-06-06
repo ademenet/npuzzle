@@ -15,7 +15,8 @@ from isSolvable import isSolvable
 # TODO accelerer avec Cython et des optis python ! Cest soit lent : environ 1 min pour un 3 * 3, soit < 1 sec pour les plus facile, il faut etre a 10 sec
 
 # BUG Parfois il ne sort pas par la sortie qui matche avec le final state, jai teste que sur des puzzles generes aleatoirement
-# BUG Time and Size complexity sont pas bons, enfin, il faut verifier ce que cest exactement car il y a toujours 1 d'ecart
+# BUG Time and Size complexity sont pas bons, enfin, il faut verifier ce que cest exactement car il y a toujours 1 d'ecart/make
+
 
 def _argparser():
     """Parse arguments using argparse library, returns a dictionnary with values."""
@@ -44,12 +45,14 @@ def main():
         npuzzle, size = parse(args['filename'])
         end = timer()
         stats['parsing'] = end - start
-        if not isSolvable(npuzzle, size):
+        goal = goal_generator(size, dim=1)
+        if not isSolvable(npuzzle, goal, size):
             sys.exit("Puzzle is not solvable")
     else:
         if args['size'] > 2:
             size = args['size']
-            npuzzle = puzzle_generator(size)
+            goal = goal_generator(size, dim=1)
+            npuzzle = puzzle_generator(size, goal)
         else:
             sys.exit("Size is too small")
 
