@@ -5,48 +5,81 @@ from heuristic import manhattan
 from debug import show_tree
 from utils import *
 
-def retracePath(c):
-    print("COUCOU")
-    path = [c]
-    while c.parent is not None:
-        c = c.parent
-        path.append(c)
-    path.reverse()
-    print(path)
+import numpy
+
+class Node:
+    """This class is used to store nodes informations and states.
+
+    Args:
+        state (1D numpy array): actual state of the node.
+        parent (Node): parent state.
+        cost (int): cost so far, cost of this actual node.
+    """
+    def __init__(self, state, parent=None, cost=0):
+        self.state = state
+        self.parent = parent
+        self.cost = cost
+
+    def __eq__(self, other):
+        """Compare only if state (1D numpy array) is equal to other."""
+        print("__eq__")
+        # return isinstance(other, Node) and self.state == other.state
+        return np.array_equal(self.state, other)
+        # return hash(self.state) == hash(other)
+
+    def __hash__(self):
+        print("__hash__")
+        return hash(tuple(self.state))
+
+    def __lt__(self, other):
+        print("__lt__")
+        return self.cost < other.cost
+
+    def __iter__(self):
+        return self
+
+def _retracePath(c):
+    """Display all the states from initial to goal.
+    """
+    # path = [c]
+    # while c.parent is not None:
+    #     c = c.parent
+    #     path.append(c)
+    # path.reverse()
+    paths = numpy.array(list(c))
+    for state in paths:
+        print(state.reshape(3, 3))
     # return path
 
-# neighbors renvoit les etats qui se trouvent apres l'etat envoye
-
-def neighbors(size, current):
+def _neighbors(size, current):
     """This generator returns new states from the current state given in argument.
 
     Args:
         size (int): square's size.
-        current (1D array): this is a current state contains into 1D array.
+        current (Node): current state node.
 
     Yields:
-        copy (1D array): returns a copy of the possible neighbor, corresponding
+        neighbor (Node): returns a copy of the possible neighbor, corresponding
             to one potential move.
     """
     neighbors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
-    index_zero = np.argmin(current)
+    index_zero = np.argmin(current.state)
     i, j = from_1d_to_2d(size, index_zero)
     for index in neighbors:
-        copy = np.copy(current)
+        copy = np.copy(current.state)
         if 0 <= i + index[0] < size and 0 <= j + index[1] < size:
             to_switch_with = from_2d_to_1d(size, i + index[0], j + index[1])
-            copy[index_zero] = current[to_switch_with]
+            copy[index_zero] = current.state[to_switch_with]
             copy[to_switch_with] = 0
-            yield copy
-
-# TODO Garder les parents pour pouvoir afficher le chemin de la solution
+            neighbor = Node(state=copy, parent=current, cost=current.cost + 1)
+            yield neighbor
 
 def solve(start, goal, size):
     """Solve the puzzle using A* algorithm.
 
     Args:
-        start (1D array): starting state.
-        goal (1D array): goal state.
+        start (1D numpy array): starting state.
+        goal (1D numpy array): goal state.
         size (int): square's size.
 
     Returns:
@@ -63,52 +96,41 @@ def solve(start, goal, size):
     open list and closed list. It optimizes the accessibility, instead of
     looking into the heap to know if we have allready explored one state.
     """
+    # Initialize a new Node
+    start = Node(start)
     # Our two sets, it's easier to use sets than lists because of the hash, it
     # is only O(1) to find if a state is allready
     open_list = set()
     closed_list = set()
     # We still need a list to use as our binary min heap.
     heap = []
-    heapq.heappush(heap, (0, start))
-    parent = {}
+    heapq.heappush(heap, (start.cost, start))
+    # Initialize the open list
+    open_list.add(start)
 
     # Variables asked by the subject:
     stats = {'time_complexity': 1, # Total number of states ever selected in open list
              'size_complexity': 0, # Maximum number of states represented at the same time in lists
              'moves': 0} # Number of moves required to transition from first state to goal state
 
-    open_list.add(tuple(start))
-
     while open_list:
         current = heapq.heappop(heap)
-        # print("current: ", current) # Debug
-
-        closed_list.add(tuple(current[1]))
-
-        if np.array_equal(current[1], goal):
-            print("END of game!")
+        closed_list.add(current[1])
+        if current == goal:
+            print("Reach the goal")
             print("Time complexity: ", stats['time_complexity'])
             stats['size_complexity'] = len(open_list) + len(closed_list)
             print("Size complexity: ", stats['size_complexity'])
             return
+        open_list.remove(current[1])
 
-        # print("current: {}".format(current))
-        open_list.remove(tuple(current[1]))
+        for state in _neighbors(size, current[1]):
+            if state not in closed_list:
+                heuristic = manhattan(current[1].state, goal, size)
+                fn = state.cost + heuristic
+                if state not in open_list:
+                    open_list.add(state)
+                    heapq.heappush(heap, (fn, state))
 
-
-        # closed_list.add(tuple(current[1]))
-        for state in neighbors(size, current[1]): # on parcourt les possibilites
-            if tuple(state) not in closed_list: # si on est pas deja passe par la hop !
-                heuristic = manhattan(current[1], goal, size)
-                # print("heuristic: ", heuristic) # Debug
-                # tile.H = manhattan(goal.x, goal.y, tile.x, tile.y)
-                if tuple(state) not in open_list: # si jamais explore, ajouter a la liste a explorer
-
-                    open_list.add(tuple(state))
                     stats['time_complexity'] += 1
-
-                    heapq.heappush(heap, (heuristic, state.tolist())) # on fout tout avec lheuristic en classement
-                    # TESTING
-                    # parent.add(tuple((tuple(state), tuple(current[1]))))
-                # tile.parent = current # plus on sauvegarde le parent
     return
