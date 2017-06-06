@@ -21,5 +21,6 @@ def puzzle_generator(size, goal):
 			while (puzzle[rdm] != -1):
 				rdm = random.randrange(0, limit)
 			puzzle[rdm] = cnt
+		puzzle = np.asarray(puzzle, dtype=int)
 		if isSolvable(puzzle, goal, size):
-			return np.asarray(puzzle, dtype=int)
+			return puzzle
