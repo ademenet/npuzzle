@@ -1,8 +1,10 @@
+import cython
 import numpy as np
+cimport numpy as np
 from utils import *
 
-def _unrollPuzzle(puzzle, size):
-	"""Transform 1D array puzzle to an unroll puzzle to test solvability.
+"""def _unrollPuzzle(puzzle, size):
+	Transform 1D array puzzle to an unroll puzzle to test solvability.
 
 	For example:
 		5 8 2
@@ -16,7 +18,7 @@ def _unrollPuzzle(puzzle, size):
 
 	Returns:
 		unrolled puzzle (1D numpy array)
-	"""
+	
 	limit = size * size
 	puzzle = np.reshape(puzzle, [size, size])
 	unroll = np.zeros(size * size, dtype=int)
@@ -46,7 +48,7 @@ def _unrollPuzzle(puzzle, size):
 			i += 1
 		l += 1
 		if l > r: break
-	return unroll
+	return unroll"""
 
 def inversion(puzzle):
 	
@@ -56,14 +58,16 @@ def inversion(puzzle):
 	Args:
 		puzzle (1D numpy array): the puzzle to check, in is initial state form.
 	"""
-	inversion = 0
+	cdef int inversion = 0
+	cdef int current
+	cdef int i
 	for current in range(puzzle.size - 1):
 		for i in range(current + 1, puzzle.shape[0]):
 			if puzzle[current] > puzzle[i]:
 				inversion += 1
 	return inversion
 
-def isSolvable(puzzle, goal, size):
+def isSolvable(puzzle, goal, int size):
 	"""Check if a uzzle is solvable.
 
 	compare the polarity of the numbers of inversion between the puzzle and the goal
@@ -76,8 +80,8 @@ def isSolvable(puzzle, goal, size):
 	Returns:
 		boolean: True if solvable, False if not.
 	"""
-	inversion_puzzle = inversion(puzzle)
-	inversion_goal = inversion(goal)
+	cdef int inversion_puzzle = inversion(puzzle)
+	cdef int inversion_goal = inversion(goal)
 	if (puzzle.size % 2 == 0):
 		inversion_puzzle += (size - from_1d_to_2d(size, np.where(puzzle == 0)[0])[0]) % 2  
 		inversion_goal += (size - from_1d_to_2d(size, np.where(goal == 0)[0])[0]) % 2
