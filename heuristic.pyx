@@ -19,7 +19,6 @@ def find_coord(arr, int val, int s):
 	return list(from_1d_to_2d(math.sqrt(s), i))
 
 def distance_2_points(coord_ref, coord):
-
 	return abs(coord_ref[0] - coord[0]) + abs(coord_ref[1] - coord[1])
 
 def manhattan(state, goal, int s):
@@ -44,7 +43,6 @@ def manhattan(state, goal, int s):
 		coord = find_coord(state, val, s)
 		heur += distance_2_points(coord_ref, coord)
 	return heur
-
 
 def nSwap(state, goal, int s):
 	"""n-Swap heuristic
