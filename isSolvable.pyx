@@ -15,7 +15,7 @@ def inversion(puzzle):
 	cdef int i
 	for current in range(puzzle.size - 1):
 		for i in range(current + 1, puzzle.shape[0]):
-			if puzzle[current] > puzzle[i]:
+			if puzzle[current] > puzzle[i] and (puzzle[current] != 0 and puzzle[i] != 0):
 				inversion += 1
 	return inversion
 
