@@ -117,8 +117,12 @@ def solve(start, goal, size):
     start = Node(start)
     # Our two sets, it's easier to use sets than lists because of the hash, it
     # is only O(1) to find if a state is allready
-    open_list = set()
-    closed_list = set()
+    # open_list = set()
+    # closed_list = set()
+
+    open_list = {}
+    closed_list = {}
+
     heap = PriorityQueue()
     heap.put(start.cost, start)
     # Initialize the open list
@@ -141,8 +145,7 @@ def solve(start, goal, size):
         print(open_list)
 
         for state in _neighbors(size, current):
-            # if state in closed_list and state.cost > celui de la closed_list
-            if state not in closed_list:
+            if state not in closed_list and state < closed_list:
                 heuristic = manhattan(current.state, goal, size)
                 fn = state.cost + heuristic
                 if state not in open_list:
