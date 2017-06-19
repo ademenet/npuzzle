@@ -5,7 +5,6 @@ from heuristic import manhattan
 from debug import show_tree
 from utils import *
 
-import numpy
 
 class Node:
     """This class is used to store nodes informations and states.
@@ -22,36 +21,23 @@ class Node:
 
     def __eq__(self, other):
         """Compare only if state (1D numpy array) is equal to other."""
-        # print("__eq__")
-        # return isinstance(other, Node) and self.state == other.state
         return np.array_equal(self.state, other)
-        # return hash(self.state) == hash(other)
 
     def __hash__(self):
-        # print("__hash__")
         return hash(tuple(self.state))
 
     def __lt__(self, other):
-        # print("__lt__")
         return self.cost < other.cost
 
-    # def __iter__(self):
-    #     return self
 
 def _retracePath(state):
     """Display all the states from initial to goal.
-    """
-    # path = []
+
+    TODO: Finish"""
     while state is not None:
-    # for c in state.items():
-        # c = c.parent
-        # path.append(c)
-    # path.reverse()
-    # paths = numpy.array(list(c))
-    # for state in paths:
         print(state.state.reshape(3, 3))
         state = state.parent
-    # return path
+
 
 def _neighbors(size, current):
     """This generator returns new states from the current state given in argument.
@@ -60,13 +46,15 @@ def _neighbors(size, current):
         size (int): square's size.
         current (Node): current state node.
 
-    Yields:
-        neighbor (Node): returns a copy of the possible neighbor, corresponding
-            to one potential move.
+    Return:
+        list_neighbor (list of Node): returns a copy of the possible neighbor,
+            corresponding to one potential move.
     """
     neighbors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+    list_neighbor = []
     index_zero = np.argmin(current.state)
     i, j = from_1d_to_2d(size, index_zero)
+
     for index in neighbors:
         copy = np.copy(current.state)
         if 0 <= i + index[0] < size and 0 <= j + index[1] < size:
@@ -74,7 +62,9 @@ def _neighbors(size, current):
             copy[index_zero] = current.state[to_switch_with]
             copy[to_switch_with] = 0
             neighbor = Node(state=copy, parent=current, cost=current.cost + 1)
-            yield neighbor
+            list_neighbor.append(neighbor)
+    return list_neighbor
+
 
 def solve(start, goal, size):
     """Solve the puzzle using A* algorithm.
@@ -111,9 +101,9 @@ def solve(start, goal, size):
     open_list.add(start)
 
     # Variables asked by the subject:
-    stats = {'time_complexity': 1, # Total number of states ever selected in open list
-             'size_complexity': 0, # Maximum number of states represented at the same time in lists
-             'moves': 0} # Number of moves required to transition from first state to goal state
+    stats = {'time_complexity': 1,  # Total number of states ever selected in open list
+             'size_complexity': 0,  # Maximum number of states represented at the same time in lists
+             'moves': 0}            # Number of moves required to transition from first state to goal state
 
     while open_list:
         current = heapq.heappop(heap)
