@@ -7,7 +7,7 @@ def puzzle_generator(size, goal):
 
 	Args:
 		size (int): size of the edge (not the total square).
-		goal (1D numpy array): the goal to reach, e.g final puzzle state
+		goal (1D numpy array): the goal to reach, e.g final puzzle state.
 
 	Returns:
 		npuzzle solvable (1D numpy array).
