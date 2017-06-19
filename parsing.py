@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-import cython
+
 
 def parse(filename, verbose=False):
     """Parse file text into 1D numpy array.
@@ -17,7 +17,7 @@ def parse(filename, verbose=False):
 
     Returns:
         npuzzle (1D numpy array): n-puzzle, we don't know yet if it is solvable
-		or not.
+            or not.
         size (int): size of the puzzle.
     """
     size = 0
@@ -31,9 +31,9 @@ def parse(filename, verbose=False):
                     size = np_array[0]
                     npuzzle = np.array([], dtype=int)
                     if size < 3:
-						sys.exit("Expected size is too small")
+                        sys.exit("Expected size is too small")
                     if verbose:
-						print("Expected size: ", size)
+                        print("Expected size: ", size)
                 elif np_array.shape[0] != 1 and size == 0:
                     sys.exit("No expected size, wrong format")
                 elif size != 0 and np_array.shape[0] == size:

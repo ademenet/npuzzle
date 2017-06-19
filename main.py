@@ -8,6 +8,8 @@ from parsing import parse
 from puzzle_generator import puzzle_generator
 from isSolvable import isSolvable
 
+# TODO: Implement IDA*
+
 
 def _argparser():
     """Parse arguments using argparse library, returns a dictionnary with
@@ -28,8 +30,8 @@ def _argparser():
 
     parser = argparse.ArgumentParser(description='This software solve n-puzzle using A-star algorithm')
     parser.add_argument('filename', nargs='?', type=lambda x: _file(parser, x), default=None, help='text file describing the n-puzzle initial state')
-    parser.add_argument('--heuristic', type=str, default='manhattan_distance', choices=['manhattan_distance', 'xy', 'misplaced_tiles', 'linear_conflict', 'pattern_database'], help="choose the heuristic function used by the algorithm. Default to manhattan_distance.")
-    parser.add_argument('-s', '--size', type=lambda x: _size(parser, x), default=3, help='choose a particular size to random generated n-puzzle. Default set to 3.``   ')
+    parser.add_argument('--heuristic', type=str, default='manhattan distance', choices=['manhattan distance', 'xy', 'misplaced_tiles', 'linear_conflict', 'pattern_database'], help="choose the heuristic function used by the algorithm. Default to manhattan_distance.")
+    parser.add_argument('--size', type=lambda x: _size(parser, x), default=3, help='choose a particular size to random generated n-puzzle. Default set to 3.``   ')
     args = vars(parser.parse_args())
     return args
 
@@ -49,13 +51,7 @@ def main():
         goal = goal_generator(size, dim=1)
         npuzzle = puzzle_generator(size, goal)
 
-    print("Initial state: ", npuzzle)
-
-    print("--- Generating goal state")
-    goal = goal_generator(size, dim=1)
-    print("Goal state: ", goal)
-
-    print("--- Solving puzzle using A-star")
+    print("--- Solving puzzle using A-star and {}".format(args['heuristic']))
     solve(npuzzle, goal, args['size'])
 
     print("--- END")

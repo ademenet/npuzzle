@@ -6,6 +6,21 @@ from debug import show_tree
 from utils import *
 
 
+class PriorityQueue():
+    """Not thread-safe PriorityQueue implementation."""
+    def __init__(self):
+        self.queue = []
+
+    def put(self, priority, item):
+        heapq.heappush(self.queue, (priority, item))
+
+    def get(self):
+        return heapq.heappop(self.queue)[1]
+
+    def length(self):
+        return len(self.queue)
+
+
 class Node:
     """This class is used to store nodes informations and states.
 
@@ -30,14 +45,23 @@ class Node:
         return self.cost < other.cost
 
 
-def _retracePath(state):
+def _retracePath(state, stats):
     """Display all the states from initial to goal.
 
-    TODO: Finish"""
+    Args:
+        state (Node)
+        stats (dict)
+    """
+    solution = []
+    print("Complexity in time: ", stats['time_complexity'])
+    print("Complexity in size: ", stats['size_complexity'])
     while state is not None:
-        print(state.state.reshape(3, 3))
+        solution.insert(0, state.state)
         state = state.parent
-
+    print("Number of moves: ", len(solution) - 1)
+    print("Solution:")
+    for state in solution:
+        print(state)
 
 def _neighbors(size, current):
     """This generator returns new states from the current state given in argument.
@@ -63,6 +87,7 @@ def _neighbors(size, current):
             copy[to_switch_with] = 0
             neighbor = Node(state=copy, parent=current, cost=current.cost + 1)
             list_neighbor.append(neighbor)
+    print(list_neighbor)
     return list_neighbor
 
 
@@ -94,9 +119,8 @@ def solve(start, goal, size):
     # is only O(1) to find if a state is allready
     open_list = set()
     closed_list = set()
-    # We still need a list to use as our binary min heap.
-    heap = []
-    heapq.heappush(heap, (start.cost, start))
+    heap = PriorityQueue()
+    heap.put(start.cost, start)
     # Initialize the open list
     open_list.add(start)
 
@@ -106,24 +130,25 @@ def solve(start, goal, size):
              'moves': 0}            # Number of moves required to transition from first state to goal state
 
     while open_list:
-        current = heapq.heappop(heap)
-        closed_list.add(current[1])
-        if np.array_equal(current[1].state, goal):
-            print("Reach the goal")
-            print("Time complexity: ", stats['time_complexity'])
-            stats['size_complexity'] = len(open_list) + len(closed_list)
-            print("Size complexity: ", stats['size_complexity'])
-            _retracePath(current[1])
-            return
-        open_list.remove(current[1])
+        current = heap.get()
+        closed_list.add(current)
 
-        for state in _neighbors(size, current[1]):
+        if np.array_equal(current.state, goal):
+            _retracePath(current, stats)
+            return
+
+        open_list.remove(current)
+        print(open_list)
+
+        for state in _neighbors(size, current):
+            # if state in closed_list and state.cost > celui de la closed_list
             if state not in closed_list:
-                heuristic = manhattan(current[1].state, goal, size)
+                heuristic = manhattan(current.state, goal, size)
                 fn = state.cost + heuristic
                 if state not in open_list:
-                    open_list.add(state)
-                    heapq.heappush(heap, (fn, state))
-
                     stats['time_complexity'] += 1
+                    open_list.add(state)
+                    heap.put(fn, state)
+        input()
+
     return

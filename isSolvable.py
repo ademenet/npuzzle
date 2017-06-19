@@ -1,22 +1,17 @@
 from utils import *
-import cython
 import numpy as np
-cimport numpy as np
 
 
-def inversion(np.ndarray puzzle):
+def inversion(puzzle):
     """Check for each value wether the right hand values are inferior. If true,
     increment the 'inversion' variable for each superior right hand value found.
 
     Args:
         puzzle (1D numpy array): the puzzle to check, in is initial state form.
     """
-    print(puzzle)
-    cdef int inversion = 0
-    cdef int current
-    cdef int i
-    cdef int N = puzzle.size - 1
-    cdef int D = puzzle.shape[0]
+    inversion = 0
+    N = puzzle.size - 1
+    D = puzzle.shape[0]
     for current in range(N):
         for i in range(current + 1, D):
             if puzzle[current] > puzzle[i] and (puzzle[current] != 0 and puzzle[i] != 0):
@@ -24,7 +19,7 @@ def inversion(np.ndarray puzzle):
     return inversion
 
 
-def isSolvable(puzzle, goal, int size):
+def isSolvable(puzzle, goal, size):
     """Check if a puzzle is solvable.
 
     Compare the polarity of the numbers of inversion between the puzzle and the
@@ -38,8 +33,8 @@ def isSolvable(puzzle, goal, int size):
     Returns:
         boolean: True if solvable, False if not.
     """
-    cdef int inversion_puzzle = inversion(puzzle)
-    cdef int inversion_goal = inversion(goal)
+    inversion_puzzle = inversion(puzzle)
+    inversion_goal = inversion(goal)
     if (puzzle.size % 2 == 0):
         inversion_puzzle += (size - from_1d_to_2d(size, np.where(puzzle == 0)[0])[0]) % 2
         inversion_goal += (size - from_1d_to_2d(size, np.where(goal == 0)[0])[0]) % 2

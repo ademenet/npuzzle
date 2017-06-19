@@ -1,8 +1,7 @@
-import cython
 import numpy as np
-cimport numpy as np
 
-cdef int _get_index(int size, int i, int j):
+
+def _get_index(size, i, j):
     """Get the index inside the spiral.
 
     In other words, we compute in which square belong the point of coordinates
@@ -21,18 +20,18 @@ cdef int _get_index(int size, int i, int j):
     Returns:
         square number (int) of the point belongs to.
     """
-    cdef int x
-    cdef int y
     x = min(i, size - 1 - i)
     y = min(j, size - 1 - j)
     return min(x, y)
 
-cdef int _start_number(int size, int k):
+
+def _start_number(size, k):
     """This functions returns the top left number (or the start number) of the
     square k. Start at 1."""
     return 4 * k * (size - k) + 1
 
-cdef int _get_number(int size, int i, int j):
+
+def _get_number(size, i, j):
     """Description incoming!
 
     Args:
@@ -43,9 +42,9 @@ cdef int _get_number(int size, int i, int j):
     Returns:
         number (int):
     """
-    cdef int k = _get_index(size, i, j)
-    cdef int start = _start_number(size, k)
-    cdef int offset = 0
+    k = _get_index(size, i, j)
+    start = _start_number(size, k)
+    offset = 0
     if i == k:
         offset += j - k
     else:
@@ -62,7 +61,7 @@ cdef int _get_number(int size, int i, int j):
     return start + offset
 
 
-def goal_generator(int size, int dim=2):
+def goal_generator(size, dim=2):
     """This class generates the N-puzzle goal for the A star algorithm.
 
     Args:
@@ -76,9 +75,7 @@ def goal_generator(int size, int dim=2):
     if size < 3:
         raise Exception("Can't generate goal for puzzle lower than 2.")
     assert(dim == 1 or dim == 2), "Dimension should be 1 or 2."
-    cdef np.ndarray[np.uint64_t, ndim=1] goal = np.zeros(size * size, dtype=np.uint64)
-    cdef int i
-    cdef int j
+    goal = np.zeros(size * size, dtype=np.uint64)
     for i in range(size):
         for j in range(size):
             number = _get_number(size, i, j) if _get_number(size, i, j) != size * size else 0
