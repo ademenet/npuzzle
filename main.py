@@ -51,6 +51,7 @@ def main():
         goal = goal_generator(size, dim=1)
         npuzzle = puzzle_generator(size, goal)
 
+    print("--- Start:", npuzzle)
     print("--- Solving puzzle using A-star and {}".format(args['heuristic']))
     solve(npuzzle, goal, args['size'])
 
