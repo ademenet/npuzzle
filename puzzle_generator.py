@@ -25,3 +25,11 @@ def puzzle_generator(size, goal):
         puzzle = np.asarray(puzzle, dtype=int)
         if isSolvable(puzzle, goal, size):
             return puzzle
+
+if __name__ == '__main__':
+    from goal_generator import goal_generator
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate puzzle on demand.")
+    parser.add_argument('size', nargs='?', default=3, help="choose size for the puzzle")
+    args = parser.parse_args()
+    print(puzzle_generator(int(args.size), goal_generator(int(args.size), dim=1)))
