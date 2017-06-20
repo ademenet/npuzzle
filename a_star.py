@@ -4,6 +4,7 @@ import numpy as np
 from heuristic import manhattan
 from debug import show_tree
 from utils import *
+from termcolor import colored, cprint
 
 
 class PriorityQueue():
@@ -47,7 +48,19 @@ class Node:
     def key(self):
         return (str(self.state))
 
-def _retracePath(state, stats):
+
+def display(state, size):
+    for i in range(size):
+        for j in range(size):
+            if state[i * size + j] == 0:
+                cprint(state[i * size + j], 'red', end=' ')
+            else:
+                cprint(state[i * size + j], 'white', end=' ')
+        print()
+    print()
+
+
+def _retracePath(state, stats, size):
     """Display all the states from initial to goal.
 
     Args:
@@ -63,7 +76,7 @@ def _retracePath(state, stats):
     print("Number of moves: ", len(solution) - 1)
     print("Solution:")
     for state in solution:
-        print(state)
+        display(state, size)
 
 
 def _neighbors(size, current):
@@ -139,10 +152,12 @@ def solve(start, goal, size):
 
     while open_list:
         current = heap.get()
+        stats['time_complexity'] += 1
         # closed_list.add(current)
 
         if np.array_equal(current.state, goal):
-            _retracePath(current, stats)
+            stats['size_complexity'] = len(open_list) + len(closed_list)
+            _retracePath(current, stats, size)
             return
 
         del open_list[current.key()]
@@ -160,7 +175,8 @@ def solve(start, goal, size):
                 continue
             if state.key() in open_list:
                 if state.cost < current.cost:
-                    current = state
+                    current.cost = state.cost
+                    current.parent = state.parent
             # if state.key() not in open_list or state.cost < open_list[state.key()].cost:
             else:
                 heuristic = manhattan(current.state, goal, size)
@@ -171,6 +187,5 @@ def solve(start, goal, size):
                 open_list[state.key()] = state
                 heap.put(fn, state)
             # print("open_list: ", open_list)
-        # input()
 
     return
