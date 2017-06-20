@@ -34,16 +34,18 @@ class Node:
         self.parent = parent
         self.cost = cost
 
-    def __eq__(self, other):
-        """Compare only if state (1D numpy array) is equal to other."""
-        return np.array_equal(self.state, other)
+    # def __eq__(self, other):
+    #     """Compare only if state (1D numpy array) is equal to other."""
+    #     return np.array_equal(self.state, other)
+    #
+    # def __hash__(self):
+    #     return hash(tuple(self.state))
+    #
+    # def __lt__(self, other):
+    #     return self.cost < other.cost
 
-    def __hash__(self):
-        return hash(tuple(self.state))
-
-    def __lt__(self, other):
-        return self.cost < other.cost
-
+    # def key(self):
+    #     return str(self.state)
 
 def _retracePath(state, stats):
     """Display all the states from initial to goal.
@@ -62,6 +64,7 @@ def _retracePath(state, stats):
     print("Solution:")
     for state in solution:
         print(state)
+
 
 def _neighbors(size, current):
     """This generator returns new states from the current state given in argument.
@@ -87,7 +90,6 @@ def _neighbors(size, current):
             copy[to_switch_with] = 0
             neighbor = Node(state=copy, parent=current, cost=current.cost + 1)
             list_neighbor.append(neighbor)
-    print(list_neighbor)
     return list_neighbor
 
 
@@ -125,8 +127,10 @@ def solve(start, goal, size):
 
     heap = PriorityQueue()
     heap.put(start.cost, start)
+
     # Initialize the open list
-    open_list.add(start)
+    # open_list.add(start)
+    open_list[str(start.state)] = start
 
     # Variables asked by the subject:
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
@@ -135,23 +139,30 @@ def solve(start, goal, size):
 
     while open_list:
         current = heap.get()
-        closed_list.add(current)
+        # closed_list.add(current)
+        closed_list[str(current.state)] = current
 
         if np.array_equal(current.state, goal):
             _retracePath(current, stats)
             return
 
-        open_list.remove(current)
-        print(open_list)
+        # open_list.remove(current)
+        del open_list[str(current.state)]
+        # print(open_list)
+        # open_list.pop(current.key())
 
         for state in _neighbors(size, current):
-            if state not in closed_list and state < closed_list:
+            if (str(state.state) in closed_list and state.cost < closed_list[str(state.state)].cost) or (str(state.state) in open_list and state.cost < open_list[str(state.state)].cost):
+                continue
+            else:
+            # if str(state.state) not in closed_list and state.cost < closed_list[str(state.state)].cost:
                 heuristic = manhattan(current.state, goal, size)
                 fn = state.cost + heuristic
-                if state not in open_list:
-                    stats['time_complexity'] += 1
-                    open_list.add(state)
-                    heap.put(fn, state)
+                # if str(state.state) not in open_list and state.cost < open_list[str(state.state)].cost:
+                stats['time_complexity'] += 1
+                # open_list.add(state)
+                open_list[str(state.state)] = state
+                heap.put(fn, state)
         input()
 
     return
