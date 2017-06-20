@@ -37,15 +37,15 @@ class Node:
     # def __eq__(self, other):
     #     """Compare only if state (1D numpy array) is equal to other."""
     #     return np.array_equal(self.state, other)
-    #
-    # def __hash__(self):
-    #     return hash(tuple(self.state))
-    #
-    # def __lt__(self, other):
-    #     return self.cost < other.cost
 
-    # def key(self):
-    #     return str(self.state)
+    # def __hash__(self):
+        # return hash(tuple(self.state))
+
+    def __lt__(self, other):
+        return self.cost < other.cost
+
+    def key(self):
+        return (str(self.state))
 
 def _retracePath(state, stats):
     """Display all the states from initial to goal.
@@ -130,7 +130,7 @@ def solve(start, goal, size):
 
     # Initialize the open list
     # open_list.add(start)
-    open_list[str(start.state)] = start
+    open_list[start.key()] = start
 
     # Variables asked by the subject:
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
@@ -140,29 +140,37 @@ def solve(start, goal, size):
     while open_list:
         current = heap.get()
         # closed_list.add(current)
-        closed_list[str(current.state)] = current
 
         if np.array_equal(current.state, goal):
             _retracePath(current, stats)
             return
 
+        del open_list[current.key()]
+        closed_list[current.key()] = current
+
         # open_list.remove(current)
-        del open_list[str(current.state)]
         # print(open_list)
         # open_list.pop(current.key())
 
         for state in _neighbors(size, current):
-            if (str(state.state) in closed_list and state.cost < closed_list[str(state.state)].cost) or (str(state.state) in open_list and state.cost < open_list[str(state.state)].cost):
+            # if (state.key() in closed_list and state.cost >= closed_list[state.key()].cost) or (state.key() in open_list and state.cost >= open_list[state.key()].cost):
+                # continue
+            # else:
+            if state.key() in closed_list:
                 continue
+            if state.key() in open_list:
+                if state.cost < current.cost:
+                    current = state
+            # if state.key() not in open_list or state.cost < open_list[state.key()].cost:
             else:
-            # if str(state.state) not in closed_list and state.cost < closed_list[str(state.state)].cost:
                 heuristic = manhattan(current.state, goal, size)
+                # print("heuristic: {}, cost: {}".format(heuristic, state.cost))
                 fn = state.cost + heuristic
-                # if str(state.state) not in open_list and state.cost < open_list[str(state.state)].cost:
-                stats['time_complexity'] += 1
+                # if state.cost >=
                 # open_list.add(state)
-                open_list[str(state.state)] = state
+                open_list[state.key()] = state
                 heap.put(fn, state)
-        input()
+            # print("open_list: ", open_list)
+        # input()
 
     return
