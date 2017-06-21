@@ -54,6 +54,7 @@ def main():
     print("--- Start:", npuzzle)
     print("--- Solving puzzle using A-star and {}".format(args['heuristic']))
     solve(npuzzle, goal, args['size'])
+    # astar(npuzzle, goal, args['size'])
 
     print("--- END")
 

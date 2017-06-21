@@ -5,12 +5,19 @@ from heuristic import manhattan
 from debug import show_tree
 from utils import *
 from termcolor import colored, cprint
+from pqdict import minpq
 
 
 class PriorityQueue():
     """Not thread-safe PriorityQueue implementation."""
     def __init__(self):
         self.queue = []
+
+    def display(self):
+        import copy
+        heap = copy.copy(self.queue)
+        while heap:
+            print(heapq.heappop(heap))
 
     def put(self, priority, item):
         heapq.heappush(self.queue, (priority, item))
@@ -60,7 +67,7 @@ def display(state, size):
     print()
 
 
-def _retracePath(state, stats, size):
+def _retracePath(came_from, current, stats, size):
     """Display all the states from initial to goal.
 
     Args:
@@ -68,14 +75,15 @@ def _retracePath(state, stats, size):
         stats (dict)
     """
     solution = []
+    state = current
     print("Complexity in time: ", stats['time_complexity'])
     print("Complexity in size: ", stats['size_complexity'])
     while state is not None:
-        solution.insert(0, state.state)
-        state = state.parent
-    print("Number of moves: ", len(solution) - 1)
+        solution.append(state)
+        state = came_from[str(state)]
+    print("Number of moves: ", len(came_from) - 1)
     print("Solution:")
-    for state in solution:
+    for state in reversed(solution):
         display(state, size)
 
 
@@ -92,19 +100,44 @@ def _neighbors(size, current):
     """
     neighbors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
     list_neighbor = []
-    index_zero = np.argmin(current.state)
+    index_zero = np.argmin(current)
+    # index_zero = np.argmin(current.state)
     i, j = from_1d_to_2d(size, index_zero)
 
     for index in neighbors:
-        copy = np.copy(current.state)
+        copy = np.copy(current)
+        # copy = np.copy(current.state)
         if 0 <= i + index[0] < size and 0 <= j + index[1] < size:
             to_switch_with = from_2d_to_1d(size, i + index[0], j + index[1])
-            copy[index_zero] = current.state[to_switch_with]
+            copy[index_zero] = current[to_switch_with]
+            # copy[index_zero] = current.state[to_switch_with]
             copy[to_switch_with] = 0
-            neighbor = Node(state=copy, parent=current, cost=current.cost + 1)
+            # neighbor = Node(state=copy, parent=current, cost=current.cost + 1)
+            neighbor = np.asarray(copy)
             list_neighbor.append(neighbor)
     return list_neighbor
 
+
+# def astar(start, goal, size):
+#     open_set = minpq()
+#     # closed_set = {}
+#     open_set[str(start)] = 0
+#     cost_so _far = {}
+#     came_from = {}
+#     cost_so_far[str(start)] = 0
+#     came_from[str(start)] = None
+#
+#     for node, gn in open_set.popitems():
+#         # closed_set.add(node)
+#
+#         if node == str(goal):
+#             print("FIN !")
+#             return
+#         for state in _neighbors(size, np.fromstring(node, dtype=int)):
+#             if state in closed_list:
+#                 continue
+#             fn = (gn + 1) + manhattan(np.fromstring(node, dtype=int), goal, size)
+#             if fn
 
 def solve(start, goal, size):
     """Solve the puzzle using A* algorithm.
@@ -129,21 +162,30 @@ def solve(start, goal, size):
     looking into the heap to know if we have allready explored one state.
     """
     # Initialize a new Node
-    start = Node(start)
+    # start = Node(start)
+
     # Our two sets, it's easier to use sets than lists because of the hash, it
     # is only O(1) to find if a state is allready
     # open_list = set()
     # closed_list = set()
 
-    open_list = {}
-    closed_list = {}
+    open_list = set()
+    closed_list = set()
+    # Initialize the open list
+    open_list.add(str(start))
+    # open_list[start.key()] = start
+
+    came_from = {}
+    g_score = {}
+    f_score = {}
+
+    came_from[str(start)] = None
+    g_score[str(start)] = 0
+    f_score[str(start)] = manhattan(start, goal, size)
 
     heap = PriorityQueue()
-    heap.put(start.cost, start)
-
-    # Initialize the open list
-    # open_list.add(start)
-    open_list[start.key()] = start
+    # heap.put(start.cost, start)
+    heap.put(0, start.tolist())
 
     # Variables asked by the subject:
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
@@ -151,41 +193,60 @@ def solve(start, goal, size):
              'moves': 0}            # Number of moves required to transition from first state to goal state
 
     while open_list:
-        current = heap.get()
-        stats['time_complexity'] += 1
-        # closed_list.add(current)
+        current = np.asarray(heap.get())
 
-        if np.array_equal(current.state, goal):
-            stats['size_complexity'] = len(open_list) + len(closed_list)
-            _retracePath(current, stats, size)
+        if np.array_equal(current, goal):
+            _retracePath(came_from, current, stats, size)
             return
 
-        del open_list[current.key()]
-        closed_list[current.key()] = current
+        # del open_list[current.key()]
 
-        # open_list.remove(current)
+        closed_list.add(str(current))
+        # closed_list[current.key()] = current
+
+        open_list.remove(str(current))
         # print(open_list)
         # open_list.pop(current.key())
 
         for state in _neighbors(size, current):
+
             # if (state.key() in closed_list and state.cost >= closed_list[state.key()].cost) or (state.key() in open_list and state.cost >= open_list[state.key()].cost):
                 # continue
             # else:
-            if state.key() in closed_list:
-                continue
-            if state.key() in open_list:
-                if state.cost < current.cost:
-                    current.cost = state.cost
-                    current.parent = state.parent
+
+            # if state.key() in closed_list:
+            #     continue
+            # if state.key() in open_list:
+            #     if state.cost < current.cost:
+            #         current.cost = state.cost
+            #         current.parent = state.parent
+
             # if state.key() not in open_list or state.cost < open_list[state.key()].cost:
-            else:
-                heuristic = manhattan(current.state, goal, size)
+
+            # else:
+            # if state.key() not in closed_list or state.cost < closed_list[state.key()].cost:
+
+            if str(state) in closed_list:
+                continue
+            state_g_score = g_score[str(current)] + 1 # Pour BONUS modifier ce + 1 en 0 ou autre pour breadth ou greedy
+            if str(state) not in open_list or state_g_score < g_score[str(state)]:
+                open_list.add(str(start))
+            # if state_g_score >= g_score[str(state)]:
+                # continue
+                came_from[str(state)] = current
+                g_score[str(state)] = state_g_score
+                f_score[str(state)] = state_g_score + manhattan(start, goal, size)
+                # heuristic = manhattan(current.state, goal, size)
                 # print("heuristic: {}, cost: {}".format(heuristic, state.cost))
-                fn = state.cost + heuristic
+                # fn = state.cost + heuristic
                 # if state.cost >=
                 # open_list.add(state)
-                open_list[state.key()] = state
-                heap.put(fn, state)
-            # print("open_list: ", open_list)
+                # open_list[state.key()] = state
+
+                heap.put(f_score[str(state)], state.tolist())
+                open_list.add(str(state))
+                stats['time_complexity'] += 1
+                stats['size_complexity'] = max(stats['size_complexity'], len(open_list))
+                # print("open_list: ", open_list)
 
     return
