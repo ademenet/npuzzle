@@ -37,7 +37,6 @@ def manhattan(state, goal, s):
             heuristic value (int).
     """
     heur = 0
-    i = 0
     s = s * s
     for val in range(1, s):
         coord_ref = find_coord(goal, val, s)
