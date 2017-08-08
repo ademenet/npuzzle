@@ -5,7 +5,7 @@ from heuristic import manhattan
 from debug import show_tree
 from utils import *
 from termcolor import colored, cprint
-from pqdict import minpq
+# from pqdict import minpq
 
 
 class PriorityQueue():
@@ -54,7 +54,7 @@ def _retracePath(came_from, current, stats, size):
     while state is not None:
         solution.append(state)
         state = came_from[str(state)]
-    print("Number of moves: ", len(came_from) - 1)
+    print("Number of moves: ", len(solution) - 1)
     print("Solution:")
     for state in reversed(solution):
         display(state, size)
@@ -109,9 +109,6 @@ def solve(start, goal, size):
     open list and closed list. It optimizes the accessibility, instead of
     looking into the heap to know if we have allready explored one state.
     """
-    # open_list = set()
-    # open_list.add(str(start))
-
     came_from = {}
     g_score = {}
     f_score = {}
@@ -134,8 +131,6 @@ def solve(start, goal, size):
             _retracePath(came_from, current, stats, size)
             return
 
-        # open_list.remove(str(current))
-
         for state in _neighbors(size, current):
             state_g_score = g_score[str(current)] + 1 # Pour BONUS modifier ce + 1 en 0 ou autre pour breadth ou greedy
             if str(state) not in g_score or state_g_score < g_score[str(state)]:
@@ -145,7 +140,6 @@ def solve(start, goal, size):
                 f_score[str(state)] = state_g_score + manhattan(state, goal, size)
 
                 heap.put(f_score[str(state)], state.tolist())
-                # open_list.add(str(state))
                 stats['time_complexity'] += 1
                 stats['size_complexity'] = max(stats['size_complexity'], heap.length())
 
