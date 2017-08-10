@@ -1,6 +1,6 @@
 import math
 from utils import *
-
+import numpy as np
 
 def find_coord(arr, val, s):
     """Find the 2D coordinate of a value in a 1D array
@@ -60,15 +60,16 @@ def nSwap(state, goal, s):
     """
     heur = 0
     tile = 0
-    while state != goal:
-        if state.index(tile) != goal.index(tile):
-            ind_tmp = state.index(tile)
-            tile_tmp = state[goal.index(tile)]
-            state[ind_tmp] = tile_tmp
-            state[goal.index(tile)] = tile
+    tmpState = np.copy(state)
+    while not np.array_equal(tmpState, goal):
+        if np.where(tmpState==tile)[0][0] != np.where(goal==tile)[0][0]:
+            ind_tmp = np.where(tmpState==tile)[0][0]
+            tile_tmp = tmpState[np.where(goal==tile)[0][0]]
+            tmpState[ind_tmp] = tile_tmp
+            tmpState[np.where(goal==tile)[0][0]] = tile
             heur += 1
         tile += 1
-        if tile > 8:
+        if tile > s**2 - 1:
             tile = 0
     return heur
 
@@ -89,8 +90,8 @@ def out_row_column(state, goal, s):
     """
     heur = 0
     for tile in range(1, s*s):
-        coord = from_1d_to_2d(s, state.index(tile))
-        coord_ref = from_1d_to_2d(s, goal.index(tile))
+        coord = from_1d_to_2d(s, np.where(state==tile)[0][0])
+        coord_ref = from_1d_to_2d(s, np.where(goal==tile)[0][0])
         if coord[0] != coord_ref[0]:
             heur += 1
         if coord[1] != coord_ref[1]:
@@ -115,7 +116,26 @@ def euclidian_distance(state, goal, s):
     i = 0
     n = s * s
     for val in range(1, n):
-        coord_ref = from_1d_to_2d(s, goal.index(val))
-        coord = from_1d_to_2d(s, state.index(val))
+        coord_ref = from_1d_to_2d(s, np.where(goal==val)[0][0])
+        coord = from_1d_to_2d(s, np.where(state==val)[0][0])
         heur += math.sqrt((coord_ref[0] - coord[0])**2 + (coord_ref[1] - coord[1])**2)
     return heur
+
+def getHeurstic(heur):
+    """generate dict of avaiable heuristics and returns one
+
+        Args:
+           heur (string) : heursitic choosen
+
+        Returns:
+            the choosen heuristic function if success, manhattan otherwise  
+    """
+    dictHeur = {}
+    dictHeur['manhattan distance'] = manhattan
+    dictHeur['nSwap'] = nSwap
+    dictHeur['euclidian distance'] = euclidian_distance
+    dictHeur['out row column'] = out_row_column
+
+    if heur not in dictHeur:
+        heur = 'manhattan distance'
+    return dictHeur[heur]

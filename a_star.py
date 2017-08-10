@@ -1,7 +1,7 @@
 import heapq
 import cython
 import numpy as np
-from heuristic import manhattan
+from heuristic import *
 from debug import show_tree
 from utils import *
 from termcolor import colored, cprint
@@ -87,13 +87,13 @@ def _neighbors(size, current):
     return list_neighbor
 
 
-def solve(start, goal, size):
+def solve(start, goal, args):
     """Solve the puzzle using A* algorithm.
 
     Args:
         start (1D numpy array): starting state.
         goal (1D numpy array): goal state.
-        size (int): square's size.
+        args (dict): program args.
 
     Returns:
 
@@ -112,14 +112,14 @@ def solve(start, goal, size):
     came_from = {}
     g_score = {}
     f_score = {}
+    size = args['size']
+    heuristicFunction = getHeurstic(args['heuristic'])
 
     came_from[str(start)] = None
     g_score[str(start)] = 0
-    f_score[str(start)] = manhattan(start, goal, size)
-
+    f_score[str(start)] = heuristicFunction(start, goal, size)
     heap = PriorityQueue()
     heap.put(0, start.tolist())
-
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
              'size_complexity': 0,  # Maximum number of states represented at the same time in lists
              'moves': 0}            # Number of moves required to transition from first state to goal state
@@ -137,7 +137,7 @@ def solve(start, goal, size):
                 came_from[str(state)] = current
 
                 g_score[str(state)] = state_g_score
-                f_score[str(state)] = state_g_score + manhattan(state, goal, size)
+                f_score[str(state)] = state_g_score + heuristicFunction(state, goal, size)
 
                 heap.put(f_score[str(state)], state.tolist())
                 stats['time_complexity'] += 1
