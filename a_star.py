@@ -5,6 +5,8 @@ from heuristic import *
 from debug import show_tree
 from utils import *
 from termcolor import colored, cprint
+import time
+import os
 # from pqdict import minpq
 
 
@@ -109,12 +111,15 @@ def solve(start, goal, args):
     open list and closed list. It optimizes the accessibility, instead of
     looking into the heap to know if we have allready explored one state.
     """
+
     came_from = {}
     g_score = {}
     f_score = {}
     size = args['size']
     heuristicFunction = getHeurstic(args['heuristic'])
-
+    g = 1
+    if args['greedy']:
+        g = 0
     came_from[str(start)] = None
     g_score[str(start)] = 0
     f_score[str(start)] = heuristicFunction(start, goal, size)
@@ -123,7 +128,7 @@ def solve(start, goal, args):
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
              'size_complexity': 0,  # Maximum number of states represented at the same time in lists
              'moves': 0}            # Number of moves required to transition from first state to goal state
-
+             
     while heap:
         current = np.asarray(heap.get())
 
@@ -132,7 +137,7 @@ def solve(start, goal, args):
             return
 
         for state in _neighbors(size, current):
-            state_g_score = g_score[str(current)] + 1 # Pour BONUS modifier ce + 1 en 0 ou autre pour breadth ou greedy
+            state_g_score = g_score[str(current)] + g
             if str(state) not in g_score or state_g_score < g_score[str(state)]:
                 came_from[str(state)] = current
 

@@ -121,6 +121,9 @@ def euclidian_distance(state, goal, s):
         heur += math.sqrt((coord_ref[0] - coord[0])**2 + (coord_ref[1] - coord[1])**2)
     return heur
 
+def breadth(state, goal, s):
+    return 0
+
 def getHeurstic(heur):
     """generate dict of avaiable heuristics and returns one
 
@@ -135,6 +138,7 @@ def getHeurstic(heur):
     dictHeur['nSwap'] = nSwap
     dictHeur['euclidian distance'] = euclidian_distance
     dictHeur['out row column'] = out_row_column
+    dictHeur['breadth'] = breadth
 
     if heur not in dictHeur:
         heur = 'manhattan distance'
