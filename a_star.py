@@ -124,26 +124,24 @@ def solve(start, goal, args):
     g_score[str(start)] = 0
     f_score[str(start)] = heuristicFunction(start, goal, size)
     bound =  f_score[str(start)]
-    ida = args['ida']
+    algo = args['algo']
     heap = PriorityQueue()
     heap.put(0, start.tolist())
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
              'size_complexity': 0,  # Maximum number of states represented at the same time in lists
              'moves': 0}            # Number of moves required to transition from first state to goal state
-    test=0
-    while heap:
-        print(test)
-        test+=1
+
+    while heap:	
         if heap.length() > 0:
-            current = np.asarray(heap.get())
-            if np.array_equal(current, goal):
-                _retracePath(came_from, current, stats, size)
-                return
+        current = np.asarray(heap.get())
+        if np.array_equal(current, goal):
+            _retracePath(came_from, current, stats, size)
+            return
         else:
             bound += 1
         for state in _neighbors(size, current):
             state_g_score = g_score[str(current)] + g
-            if ida and state_g_score + heuristicFunction(state, goal, size) <= bound+state_g_score:
+            if algo == 'ida-star' and state_g_score + heuristicFunction(state, goal, size) <= bound + state_g_score:
                 if str(state) not in g_score or state_g_score < g_score[str(state)]:
                     came_from[str(state)] = current
 
@@ -153,7 +151,7 @@ def solve(start, goal, args):
                     heap.put(f_score[str(state)], state.tolist())
                     stats['time_complexity'] += 1
                     stats['size_complexity'] = max(stats['size_complexity'], heap.length())
-            elif not ida:
+            elif algo == 'A-star':
                 if str(state) not in g_score or state_g_score < g_score[str(state)]:
                     came_from[str(state)] = current
 
