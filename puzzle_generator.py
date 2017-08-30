@@ -1,6 +1,6 @@
 import random
-from isSolvable import *
 import numpy as np
+from isSolvable import isSolvable
 
 
 def puzzle_generator(size, goal):
@@ -19,7 +19,7 @@ def puzzle_generator(size, goal):
         puzzle = [-1] * limit
         rdm = random.randrange(0, limit)
         for cnt in range(0, limit):
-            while (puzzle[rdm] != -1):
+            while puzzle[rdm] != -1:
                 rdm = random.randrange(0, limit)
             puzzle[rdm] = cnt
         puzzle = np.asarray(puzzle, dtype=int)

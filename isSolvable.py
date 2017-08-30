@@ -1,5 +1,5 @@
-from utils import *
 import numpy as np
+from utils import from_1d_to_2d
 
 
 def inversion(puzzle):
@@ -8,15 +8,18 @@ def inversion(puzzle):
 
     Args:
         puzzle (1D numpy array): the puzzle to check, in is initial state form.
+
+    Returns:
+        int: number of inversions.
     """
-    inversion = 0
+    inversions = 0
     N = puzzle.size - 1
     D = puzzle.shape[0]
     for current in range(N):
         for i in range(current + 1, D):
             if puzzle[current] > puzzle[i] and (puzzle[current] != 0 and puzzle[i] != 0):
-                inversion += 1
-    return inversion
+                inversions += 1
+    return inversions
 
 
 def isSolvable(puzzle, goal, size):
@@ -35,10 +38,7 @@ def isSolvable(puzzle, goal, size):
     """
     inversion_puzzle = inversion(puzzle)
     inversion_goal = inversion(goal)
-    if (puzzle.size % 2 == 0):
+    if puzzle.size % 2 == 0:
         inversion_puzzle += (size - from_1d_to_2d(size, np.where(puzzle == 0)[0])[0]) % 2
         inversion_goal += (size - from_1d_to_2d(size, np.where(goal == 0)[0])[0]) % 2
-    if (inversion_puzzle % 2) == (inversion_goal % 2):
-        return True
-    else:
-        return False
+    return inversion_puzzle % 2 == inversion_goal % 2

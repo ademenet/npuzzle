@@ -1,5 +1,5 @@
-import numpy as np
 import sys
+import numpy as np
 
 
 def parse(filename, verbose=False):
@@ -11,6 +11,7 @@ def parse(filename, verbose=False):
         - wrong size expected
         - expected size too small (size < 3)
         - no expected size before description
+        - ...
 
     Args:
         filename (str): file text path to open and parse.
@@ -18,11 +19,11 @@ def parse(filename, verbose=False):
     Returns:
         npuzzle (1D numpy array): n-puzzle, we don't know yet if it is solvable
             or not.
-        size (int): size of the puzzle.
+        size (int): side size of the puzzle.
     """
     size = 0
-    with open(filename, "r") as f:
-        for line in f:
+    with open(filename, "r") as file:
+        for line in file:
             if line.strip() == "" or line.strip().isalpha():
                 sys.exit("Wrong file format")
             if not line.startswith("#"):

@@ -1,13 +1,8 @@
 import heapq
-import cython
 import numpy as np
-from heuristic import *
-from debug import show_tree
-from utils import *
-from termcolor import colored, cprint
-import time
-import os
-# from pqdict import minpq
+from heuristic import getHeurstic
+from utils import from_1d_to_2d, from_2d_to_1d
+from termcolor import cprint
 
 
 class PriorityQueue():
@@ -16,22 +11,27 @@ class PriorityQueue():
         self.queue = []
 
     def display(self):
+        """Display the queue. For debug purposes."""
         import copy
         heap = copy.copy(self.queue)
         while heap:
             print(heapq.heappop(heap))
 
     def put(self, priority, item):
+        """Add one item to the queue, sorted according to priority."""
         heapq.heappush(self.queue, (priority, item))
 
     def get(self):
+        """Return the first item in le queue."""
         return heapq.heappop(self.queue)[1]
 
     def length(self):
+        """"Return the length of the queue."""
         return len(self.queue)
 
 
 def display(state, size):
+    """Display the state with 0 in red and others in white."""
     for i in range(size):
         for j in range(size):
             if state[i * size + j] == 0:
@@ -43,20 +43,20 @@ def display(state, size):
 
 
 def _retracePath(came_from, current, stats, size):
-    """Display all the states from initial to goal.
-
-    Args:
-        state (Node)
-        stats (dict)
-    """
+    """Retrace the paths of all the states from initial to goal and display some
+    more informations."""
     solution = []
     state = current
+
     print("Complexity in time: ", stats['time_complexity'])
     print("Complexity in size: ", stats['size_complexity'])
+
     while state is not None:
         solution.append(state)
         state = came_from[str(state)]
+
     print("Number of moves: ", len(solution) - 1)
+
     print("Solution:")
     for state in reversed(solution):
         display(state, size)
@@ -67,10 +67,10 @@ def _neighbors(size, current):
 
     Args:
         size (int): square's size.
-        current (Node): current state node.
+        current (list): current state node.
 
     Return:
-        list_neighbor (list of Node): returns a copy of the possible neighbor,
+        list_neighbor (list of list): returns a copy of the possible neighbor,
             corresponding to one potential move.
     """
     neighbors = [[-1, 0], [1, 0], [0, -1], [0, 1]]
@@ -86,6 +86,7 @@ def _neighbors(size, current):
             copy[to_switch_with] = 0
             neighbor = np.asarray(copy)
             list_neighbor.append(neighbor)
+
     return list_neighbor
 
 
@@ -98,33 +99,32 @@ def solve(start, goal, args):
         args (dict): program args.
 
     Returns:
-
-    Using set() instead of list is clever, because it's O(1) search time
-    whereas list are O(n). In fact, Python is using __hash__ object to
-    go faster. If you need documentation:
-
-        https://docs.python.org/3/reference/datamodel.html#object.__hash__
-        http://effbot.org/zone/python-hash.htm
-        https://en.wikipedia.org/wiki/Hash_tree
-
-    Thus we'll use these set in order to compare the current state with our
-    open list and closed list. It optimizes the accessibility, instead of
-    looking into the heap to know if we have allready explored one state.
+        display the solution.
     """
-
+    # Initializing the dictionnaries. Dictionnaries in Python use hashmap, thus
+    # accessing to keys is O(1).
+    # We use a PriorityQueue - build on min heap queue, it is only O(n*log(n))
+    # in worth case to be sort.
     came_from = {}
     g_score = {}
     f_score = {}
     size = args['size']
     heuristicFunction = getHeurstic(args['heuristic'])
-    g = 1
-    if args['greedy']:
-        g = 0
+
+    # We implemented two extra A-star types: breadth search and greedy search.
+    # Breadth search is a particular A-star algorithm where heuristic is allways
+    # equal to zero. Another name for it is Dijkstra (with all edge weighted to
+    # 1, which is our case).
+    # Greedy search is a particular A-star algorithm without distance/cost take
+    # into account.
+    g = 0 if args['greedy'] else 1
+
     came_from[str(start)] = None
     g_score[str(start)] = 0
     f_score[str(start)] = heuristicFunction(start, goal, size)
     heap = PriorityQueue()
     heap.put(0, start.tolist())
+
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
              'size_complexity': 0,  # Maximum number of states represented at the same time in lists
              'moves': 0}            # Number of moves required to transition from first state to goal state

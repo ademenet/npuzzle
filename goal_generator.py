@@ -32,15 +32,16 @@ def _start_number(size, k):
 
 
 def _get_number(size, i, j):
-    """Description incoming!
+    """Return the number corresponding to a partular set of coordinates in a 
+    spiral.
 
     Args:
-        size (int):
-        i (int):
-        j (int):
+        size (int): puzzle size.
+        i (int): coordinate.
+        j (int): coordinate.
 
     Returns:
-        number (int):
+        number (int): the corresponding number.
     """
     k = _get_index(size, i, j)
     start = _start_number(size, k)
@@ -62,7 +63,7 @@ def _get_number(size, i, j):
 
 
 def goal_generator(size, dim=2):
-    """This class generates the N-puzzle goal for the A star algorithm.
+    """This function generates the N-puzzle goal for the A star algorithm.
 
     Args:
         size (int): the size of the N-puzzle, should be > 2.

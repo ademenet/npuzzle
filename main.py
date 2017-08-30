@@ -1,33 +1,32 @@
 import argparse
 import sys
 import os
-from timeit import default_timer as timer
+import time
 from goal_generator import goal_generator
 from a_star import solve
 from parsing import parse
 from puzzle_generator import puzzle_generator
 from isSolvable import isSolvable
-import time
-
-# TODO: Implement IDA*
 
 
 def _argparser():
-    """Parse arguments using argparse library, returns a dictionnary with
+    """Parse arguments using argparse library, return a dictionnary with
     values."""
 
-    def _file(parser, x):
-        if not os.path.exists(x):
-            parser.error("The file {} does not exist".format(x))
+    def _file(parser, file_name):
+        """Return file_name if file exists, display error and quit otherwise."""
+        if not os.path.exists(file_name):
+            parser.error("The file {} does not exist".format(file_name))
         else:
-            return x
+            return file_name
 
-    def _size(parser, x):
-        x = int(x)
-        if x < 3:
+    def _size(parser, size):
+        """Return size if > 2, display error and quit otherwise."""
+        size = int(size)
+        if size < 3:
             parser.error("Wrong size. Should be > 2.")
         else:
-            return x
+            return size
 
     parser = argparse.ArgumentParser(description='This software solve n-puzzle using A-star algorithm')
     parser.add_argument('filename', nargs='?', type=lambda x: _file(parser, x), default=None, help='text file describing the n-puzzle initial state')
@@ -40,6 +39,7 @@ def _argparser():
 
 
 def main():
+    """Main function to be called."""
     # Parse arguments
     args = _argparser()
 
