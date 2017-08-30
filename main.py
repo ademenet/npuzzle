@@ -60,7 +60,6 @@ def main():
     start = time.time()
     solve(npuzzle, goal, args)
     print("Solved in {:0.3f} seconds".format(time.time() - start))
-    # astar(npuzzle, goal, args['size'])
 
     print("--- END")
 

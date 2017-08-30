@@ -133,10 +133,10 @@ def solve(start, goal, args):
 
     while heap:	
         if heap.length() > 0:
-        current = np.asarray(heap.get())
-        if np.array_equal(current, goal):
-            _retracePath(came_from, current, stats, size)
-            return
+            current = np.asarray(heap.get())
+            if np.array_equal(current, goal):
+                _retracePath(came_from, current, stats, size)
+                return
         else:
             bound += 1
         for state in _neighbors(size, current):
