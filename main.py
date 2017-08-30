@@ -32,6 +32,7 @@ def _argparser():
     parser = argparse.ArgumentParser(description='This software solve n-puzzle using A-star algorithm')
     parser.add_argument('filename', nargs='?', type=lambda x: _file(parser, x), default=None, help='text file describing the n-puzzle initial state')
     parser.add_argument('--heuristic', type=str, default='manhattan distance', choices=['manhattan distance', 'nSwap', 'euclidian distance', 'out row column','breadth'], help="choose the heuristic function used by the algorithm. Default to manhattan_distance.")
+    parser.add_argument('--ida', type=bool, default=False, help='Solving n-puzzle uing IDA* algorithm')
     parser.add_argument('--size', type=lambda x: _size(parser, x), default=3, help='choose a particular size to random generated n-puzzle. Default set to 3.')
     parser.add_argument('--viz', type=bool, default=False, help='')
     parser.add_argument('--greedy', type=bool, default=False, help='activate the greedy best first search (g(x) = 0))')
