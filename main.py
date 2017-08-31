@@ -34,7 +34,7 @@ def _argparser():
     parser.add_argument('--algo', type=str, default="A-star",choices=['A-star','ida-star'], help='Choose the algorithm to solve the puzzle. Default : A-star')
     parser.add_argument('--size', type=lambda x: _size(parser, x), default=3, help='choose a particular size to random generated n-puzzle. Default set to 3.')
     parser.add_argument('--viz', type=bool, default=False, help='')
-    parser.add_argument('--greedy', type=bool, default=False, help='activate the greedy best first search (g(x) = 0))')
+    parser.add_argument('--greedy', default=False, action='store_true', help='activate the greedy best first search (g(x) = 0))')
     args = vars(parser.parse_args())
     return args
 
