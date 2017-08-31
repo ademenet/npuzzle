@@ -52,7 +52,7 @@ def parse(filename, verbose=False):
         if np.sum(np.arange(0, limit + 1)) != np.sum(npuzzle):
             sys.exit("Wrong format")
         if not np.array_equal(np.sort(npuzzle), np.arange(0, size * size)):
-            sys.exit("Wrong format")        
+            sys.exit("Wrong format")
         return npuzzle, size
     else:
         sys.exit("Wrong size")
