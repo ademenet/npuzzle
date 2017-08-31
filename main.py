@@ -48,6 +48,7 @@ def main():
     if args['filename'] is not None:
         npuzzle, size = parse(args['filename'])
         goal = goal_generator(size, dim=1)
+        print(goal)
         if not isSolvable(npuzzle, goal, size):
             sys.exit("Puzzle is not solvable")
     else:

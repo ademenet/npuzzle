@@ -3,6 +3,7 @@ import numpy as np
 from utils import from_1d_to_2d
 import functools
 
+
 @functools.lru_cache(maxsize=None)
 def find_coord(arr, val, s):
     """Find the 2D coordinate of a value in a 1D array
@@ -20,9 +21,11 @@ def find_coord(arr, val, s):
         i += 1
     return (from_1d_to_2d(math.sqrt(s), i))
 
+
 @functools.lru_cache(maxsize=None)
 def distance_2_points(coord_ref, coord):
     return abs(coord_ref[0] - coord[0]) + abs(coord_ref[1] - coord[1])
+
 
 @functools.lru_cache(maxsize=None)
 def manhattan(state, goal, s):
@@ -47,6 +50,7 @@ def manhattan(state, goal, s):
     return heur
 
 
+@functools.lru_cache(maxsize=None)
 def nSwap(state, goal, s):
     """n-Swap heuristic.
 
@@ -76,6 +80,7 @@ def nSwap(state, goal, s):
     return heur
 
 
+@functools.lru_cache(maxsize=None)
 def out_row_column(state, goal, s):
     """"out of row out of column heuristic
 
@@ -101,6 +106,7 @@ def out_row_column(state, goal, s):
     return heur
 
 
+@functools.lru_cache(maxsize=None)
 def euclidian_distance(state, goal, s):
     """This is the euclidian distance heuristic.
 
@@ -122,11 +128,15 @@ def euclidian_distance(state, goal, s):
         heur += math.sqrt((coord_ref[0] - coord[0])**2 + (coord_ref[1] - coord[1])**2)
     return heur
 
+
+@functools.lru_cache(maxsize=None)
 def breadth(state, goal, s):
     """Breadth search is a particular case of A-star algorithm. It only takes in
     account the cost so far. Thus the 'breadth' heuristic always return 0."""
     return 0
 
+
+@functools.lru_cache(maxsize=None)
 def getHeurstic(heur):
     """Generate dict of available heuristics and returns one.
 

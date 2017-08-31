@@ -1,4 +1,5 @@
 import sys
+import os
 import numpy as np
 
 
@@ -22,6 +23,8 @@ def parse(filename, verbose=False):
         size (int): side size of the puzzle.
     """
     size = 0
+    if not os.path.getsize(filename) > 0:
+        sys.exit("Empty file")
     with open(filename, "r") as file:
         for line in file:
             if line.strip() == "" or line.strip().isalpha():
@@ -48,6 +51,8 @@ def parse(filename, verbose=False):
                 sys.exit("Wrong format")
         if np.sum(np.arange(0, limit + 1)) != np.sum(npuzzle):
             sys.exit("Wrong format")
+        if not np.array_equal(np.sort(npuzzle), np.arange(0, size * size)):
+            sys.exit("Wrong format")        
         return npuzzle, size
     else:
         sys.exit("Wrong size")
