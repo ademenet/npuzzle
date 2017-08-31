@@ -2,7 +2,7 @@ import math
 import numpy as np
 from utils import from_1d_to_2d
 import functools
-
+import copy
 
 @functools.lru_cache(maxsize=None)
 def find_coord(arr, val, s):
@@ -65,20 +65,21 @@ def nSwap(state, goal, s):
     """
     heur = 0
     tile = 0
-    tmpState = np.copy(state)
-    while not np.array_equal(tmpState, goal):
-        if np.where(tmpState==tile)[0][0] != np.where(goal==tile)[0][0]:
-            ind_tmp = np.where(tmpState==tile)[0][0]
-            tile_tmp = tmpState[np.where(goal==tile)[0][0]]
+    goal = list(goal)
+    tmpState = list(copy.copy(state))
+    while not tmpState == goal:
+        if state.index(tile) != goal.index(tile):
+            ind_tmp = tmpState.index(tile)
+            tile_tmp = tmpState[goal.index(tile)]
             tmpState[ind_tmp] = tile_tmp
-            tmpState[np.where(goal==tile)[0][0]] = tile
+            tmpState[goal.index(tile)] = tile
             heur += 1
         tile += 1
         if tile > s**2 - 1:
             tile = 0
     return heur
 
-
+@functools.lru_cache(maxsize=None)
 def out_row_column(state, goal, s):
     """"out of row out of column heuristic
 
@@ -95,15 +96,15 @@ def out_row_column(state, goal, s):
     """
     heur = 0
     for tile in range(1, s*s):
-        coord = from_1d_to_2d(s, np.where(state==tile)[0][0])
-        coord_ref = from_1d_to_2d(s, np.where(goal==tile)[0][0])
+        coord = from_1d_to_2d(s, state.index(tile))
+        coord_ref = from_1d_to_2d(s, goal.index(tile))
         if coord[0] != coord_ref[0]:
             heur += 1
         if coord[1] != coord_ref[1]:
             heur += 1
     return heur
 
-
+@functools.lru_cache(maxsize=None)
 def euclidian_distance(state, goal, s):
     """This is the euclidian distance heuristic.
 
@@ -120,8 +121,8 @@ def euclidian_distance(state, goal, s):
     heur = 0
     n = s * s
     for val in range(1, n):
-        coord_ref = from_1d_to_2d(s, np.where(goal==val)[0][0])
-        coord = from_1d_to_2d(s, np.where(state==val)[0][0])
+        coord_ref = from_1d_to_2d(s, goal.index(val))
+        coord = from_1d_to_2d(s, state.index(val))
         heur += math.sqrt((coord_ref[0] - coord[0])**2 + (coord_ref[1] - coord[1])**2)
     return heur
 
