@@ -33,7 +33,7 @@ def _argparser():
     parser.add_argument('--heuristic', type=str, default='manhattan distance', choices=['manhattan distance', 'nSwap', 'euclidian distance', 'out row column','breadth'], help="choose the heuristic function used by the algorithm. Default to manhattan_distance.")
     parser.add_argument('--algo', type=str, default="A-star",choices=['A-star','ida-star'], help='Choose the algorithm to solve the puzzle. Default : A-star')
     parser.add_argument('--size', type=lambda x: _size(parser, x), default=3, help='choose a particular size to random generated n-puzzle. Default set to 3.')
-    parser.add_argument('--viz', type=bool, default=False, help='')
+    parser.add_argument('--viz', default=False, action='store_true', help='activate a visualisation with moving tile')
     parser.add_argument('--greedy', default=False, action='store_true', help='activate the greedy best first search (g(x) = 0))')
     parser.add_argument('--time', default=False, action='store_true', help='display the duration')    
     args = vars(parser.parse_args())

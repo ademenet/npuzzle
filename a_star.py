@@ -3,7 +3,8 @@ import numpy as np
 from heuristic import getHeurstic
 from utils import from_1d_to_2d, from_2d_to_1d
 from termcolor import cprint
-
+import time
+import os
 
 class PriorityQueue():
     """Not thread-safe PriorityQueue implementation."""
@@ -42,12 +43,12 @@ def display(state, size):
     print()
 
 
-def _retracePath(came_from, current, stats, size):
+def _retracePath(came_from, current, stats, size, viz):
     """Retrace the paths of all the states from initial to goal and display some
     more informations."""
     solution = []
     state = current
-
+    flag = True
     print("Complexity in time: ", stats['time_complexity'])
     print("Complexity in size: ", stats['size_complexity'])
 
@@ -59,7 +60,12 @@ def _retracePath(came_from, current, stats, size):
 
     print("Solution:")
     for state in reversed(solution):
+        if viz : os.system('clear')
         display(state, size)
+        if viz and flag :
+            time.sleep(2)
+            flag = False
+        if viz : time.sleep(0.5)
 
 
 def _neighbors(size, current):
@@ -137,7 +143,7 @@ def solve(start, goal, args):
         if heap.length() > 0:
             current = heap.get()
             if current == goal:
-                _retracePath(came_from, current, stats, size)
+                _retracePath(came_from, current, stats, size, args['viz'])
                 return
         else:
             bound += 1
