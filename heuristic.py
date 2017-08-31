@@ -1,8 +1,9 @@
 import math
 import numpy as np
 from utils import from_1d_to_2d
+import functools
 
-
+@functools.lru_cache(maxsize=None)
 def find_coord(arr, val, s):
     """Find the 2D coordinate of a value in a 1D array
 
@@ -17,13 +18,13 @@ def find_coord(arr, val, s):
     i = 0
     while arr[i] != val:
         i += 1
-    return list(from_1d_to_2d(math.sqrt(s), i))
+    return (from_1d_to_2d(math.sqrt(s), i))
 
-
+@functools.lru_cache(maxsize=None)
 def distance_2_points(coord_ref, coord):
     return abs(coord_ref[0] - coord[0]) + abs(coord_ref[1] - coord[1])
 
-
+@functools.lru_cache(maxsize=None)
 def manhattan(state, goal, s):
     """This is the Manhatthan heuristic.
 

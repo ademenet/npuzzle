@@ -84,10 +84,10 @@ def _neighbors(size, current):
             to_switch_with = from_2d_to_1d(size, i + index[0], j + index[1])
             copy[index_zero] = current[to_switch_with]
             copy[to_switch_with] = 0
-            neighbor = np.asarray(copy)
+            neighbor = tuple(copy)
             list_neighbor.append(neighbor)
 
-    return list_neighbor
+    return tuple(list_neighbor)
 
 
 def solve(start, goal, args):
@@ -119,13 +119,15 @@ def solve(start, goal, args):
     # into account.
     g = 0 if args['greedy'] else 1
 
+    goal = tuple(goal)
+    start = tuple(start)
     came_from[str(start)] = None
     g_score[str(start)] = 0
     f_score[str(start)] = heuristicFunction(start, goal, size)
     bound =  f_score[str(start)]
     algo = args['algo']
     heap = PriorityQueue()
-    heap.put(0, start.tolist())
+    heap.put(0, start)
 
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
              'size_complexity': 0,  # Maximum number of states represented at the same time in lists
@@ -133,8 +135,8 @@ def solve(start, goal, args):
 
     while heap:	
         if heap.length() > 0:
-            current = np.asarray(heap.get())
-            if np.array_equal(current, goal):
+            current = heap.get()
+            if current == goal:
                 _retracePath(came_from, current, stats, size)
                 return
         else:
@@ -148,7 +150,7 @@ def solve(start, goal, args):
                     g_score[str(state)] = state_g_score
                     f_score[str(state)] = state_g_score + heuristicFunction(state, goal, size)
 
-                    heap.put(f_score[str(state)], state.tolist())
+                    heap.put(f_score[str(state)], state)
                     stats['time_complexity'] += 1
                     stats['size_complexity'] = max(stats['size_complexity'], heap.length())
             elif algo == 'A-star':
@@ -158,7 +160,7 @@ def solve(start, goal, args):
                     g_score[str(state)] = state_g_score
                     f_score[str(state)] = state_g_score + heuristicFunction(state, goal, size)
 
-                    heap.put(f_score[str(state)], state.tolist())
+                    heap.put(f_score[str(state)], state)
                     stats['time_complexity'] += 1
                     stats['size_complexity'] = max(stats['size_complexity'], heap.length())
             
