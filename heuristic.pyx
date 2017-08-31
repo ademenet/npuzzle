@@ -1,48 +1,81 @@
+import cython
 import math
 import numpy as np
+cimport numpy as np
 from utils import from_1d_to_2d
 
 
-def find_coord(arr, val, s):
-    """Find the 2D coordinate of a value in a 1D array
+cdef find_coord(np.ndarray[np.int, ndim=1] state):
+    """From 1D array return array of coordinates.
+
+    It aims to return one array of coordinates to be used with np.unravel_index
+    so as to use vectorized/no loop calculations.
+
+    Example:
+        state = [1, 3, 2, 4, 5, 6, 8, 7, 0]
+        return [8, 0, 2, 1, 3, 4, 5, 7, 6]
 
     Args:
-        arr (int[]) : 1D array
-        val (int) : value to find
-        s (int) : array size
+        state (np.ndarray) : 1D array of the state.
 
     Returns:
-        2D coordinates array [x,y]
+        (np.ndarray) Array of 1D coordinates.
     """
-    i = 0
-    while arr[i] != val:
-        i += 1
-    return list(from_1d_to_2d(math.sqrt(s), i))
+    cdef np.ndarray[np.int, ndim=1] arr_coord = np.empty(state.shape[0], dtype=np.int)
+    for index in range(state.shape[0]):
+        arr_coord[state[index]] = index
+    return arr_coord
 
 
-def distance_2_points(coord_ref, coord):
-    return abs(coord_ref[0] - coord[0]) + abs(coord_ref[1] - coord[1])
-
-
-def manhattan(state, goal, s):
+cpdef manhattan(np.ndarray[np.int, ndim=1] state, np.ndarray[np.int, ndim=1] goal, int size):
     """This is the Manhatthan heuristic.
 
     SUM(for i from 1 to s-1) : abs(Xgoal - Xstat_i) + abs(Ygoal - Ystat_i)
 
     Args:
-        state (int[]) : a puzzle state
-        goal (int[]) : the puzzle goal e.g final state
+        state (np.ndarray) : a puzzle state
+        goal (np.ndarray) : the puzzle goal e.g final state
         s (int) : size of the puzzle
 
     Returns:
         heuristic value (int).
     """
-    heur = 0
-    s = s * s
-    for val in range(1, s):
-        coord_ref = find_coord(goal, val, s)
-        coord = find_coord(state, val, s)
-        heur += distance_2_points(coord_ref, coord)
+    cdef int heur = 0
+    cdef np.ndarray[np.int, ndim=1] coord_1d = find_coord(state)
+    cdef np.ndarray[np.int, ndim=1] goal_coord_1d = find_coord(state)
+
+    coord_2d = np.unravel_index(coord_1d, (size, size))
+    # Passer les coord 2d de goal plutot que de recalculer a chaque fois
+    goal_coord_2d = np.unravel_index(goal_coord_1d, (size, size))
+
+    heur = np.sum(np.abs(goal_coord_2d[0] - coord_2d[0]) + np.abs(goal_coord_2d[1] - coord_2d[1]))
+
+    return heur
+
+
+cpdef euclidian_distance(np.ndarray[np.int, ndim=1] state, np.ndarray[np.int, ndim=1] goal, int size):
+    """This is the euclidian distance heuristic.
+
+        SUM(for i from 1 to s*s-1) : sqrt ((Xgoal - Xstat_i)^2 + (Ygoal - Ystat_i)^2)
+
+        Args:
+            state (int[]) : a puzzle state
+            goal (int[]) : the puzzle goal e.g final state
+            s (int) : size of the puzzle
+
+        Returns:
+            heuristic value (int).
+    """
+    cdef int heur = 0
+    cdef np.ndarray[np.int, ndim=1] coord_1d = find_coord(state)
+    cdef np.ndarray[np.int, ndim=1] goal_coord_1d = find_coord(state)
+
+    coord_2d = np.unravel_index(coord_1d, (size, size))
+    # Passer les coord 2d de goal plutot que de recalculer a chaque fois
+    goal_coord_2d = np.unravel_index(goal_coord_1d, (size, size))
+
+    heur = np.sum(np.sqrt(np.square(goal_coord_2d[0] - coord_2d[0]) + np.square(goal_coord_2d[1] - coord_2d[1])))
+
     return heur
 
 
@@ -100,31 +133,11 @@ def out_row_column(state, goal, s):
     return heur
 
 
-def euclidian_distance(state, goal, s):
-    """This is the euclidian distance heuristic.
-
-        SUM(for i from 1 to s*s-1) : sqrt ((Xgoal - Xstat_i)^2 + abs(Ygoal - Ystat_i)^2)
-
-        Args:
-            state (int[]) : a puzzle state
-            goal (int[]) : the puzzle goal e.g final state
-            s (int) : size of the puzzle
-
-        Returns:
-            heuristic value (int).
-    """
-    heur = 0
-    n = s * s
-    for val in range(1, n):
-        coord_ref = from_1d_to_2d(s, np.where(goal==val)[0][0])
-        coord = from_1d_to_2d(s, np.where(state==val)[0][0])
-        heur += math.sqrt((coord_ref[0] - coord[0])**2 + (coord_ref[1] - coord[1])**2)
-    return heur
-
 def breadth(state, goal, s):
     """Breadth search is a particular case of A-star algorithm. It only takes in
     account the cost so far. Thus the 'breadth' heuristic always return 0."""
     return 0
+
 
 def getHeurstic(heur):
     """Generate dict of available heuristics and returns one.

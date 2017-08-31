@@ -101,6 +101,9 @@ def solve(start, goal, args):
     Returns:
         display the solution.
     """
+    import cProfile
+    cp = cProfile.Profile()
+    cp.enable()
     # Initializing the dictionnaries. Dictionnaries in Python use hashmap, thus
     # accessing to keys is O(1).
     # We use a PriorityQueue - build on min heap queue, it is only O(n*log(n))
@@ -136,6 +139,8 @@ def solve(start, goal, args):
             current = np.asarray(heap.get())
             if np.array_equal(current, goal):
                 _retracePath(came_from, current, stats, size)
+                cp.disable()
+                cp.print_stats()
                 return
         else:
             bound += 1
@@ -161,5 +166,7 @@ def solve(start, goal, args):
                     heap.put(f_score[str(state)], state.tolist())
                     stats['time_complexity'] += 1
                     stats['size_complexity'] = max(stats['size_complexity'], heap.length())
-            
+
+    cp.disable()
+    cp.print_stats()
     return
