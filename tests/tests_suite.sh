@@ -31,7 +31,7 @@ test_valids()
 while true; do
 	echo "\033[34;1mChoose a tests suite:\n
 		[1]\tErrors tests suite\n
-		[2]\tValid tests suite\n
+		[2]\tValids tests suite\n
 		[q]\tQuit\n
 		\033[0m"
 	read tests
