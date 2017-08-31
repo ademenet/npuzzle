@@ -35,6 +35,7 @@ def _argparser():
     parser.add_argument('--size', type=lambda x: _size(parser, x), default=3, help='choose a particular size to random generated n-puzzle. Default set to 3.')
     parser.add_argument('--viz', type=bool, default=False, help='')
     parser.add_argument('--greedy', default=False, action='store_true', help='activate the greedy best first search (g(x) = 0))')
+    parser.add_argument('--time', default=False, action='store_true', help='display the duration')    
     args = vars(parser.parse_args())
     return args
 
@@ -59,7 +60,8 @@ def main():
     print("--- Solving puzzle using {} and {}".format(args['algo'],args['heuristic']))
     start = time.time()
     solve(npuzzle, goal, args)
-    print("Solved in {:0.3f} seconds".format(time.time() - start))
+    if args['time']:
+        print("Solved in {:0.3f} seconds".format(time.time() - start))
 
     print("--- END")
 
