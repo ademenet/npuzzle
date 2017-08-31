@@ -50,7 +50,6 @@ def manhattan(state, goal, s):
     return heur
 
 
-@functools.lru_cache(maxsize=None)
 def nSwap(state, goal, s):
     """n-Swap heuristic.
 
@@ -80,7 +79,6 @@ def nSwap(state, goal, s):
     return heur
 
 
-@functools.lru_cache(maxsize=None)
 def out_row_column(state, goal, s):
     """"out of row out of column heuristic
 
@@ -106,7 +104,6 @@ def out_row_column(state, goal, s):
     return heur
 
 
-@functools.lru_cache(maxsize=None)
 def euclidian_distance(state, goal, s):
     """This is the euclidian distance heuristic.
 
@@ -129,14 +126,12 @@ def euclidian_distance(state, goal, s):
     return heur
 
 
-@functools.lru_cache(maxsize=None)
 def breadth(state, goal, s):
     """Breadth search is a particular case of A-star algorithm. It only takes in
     account the cost so far. Thus the 'breadth' heuristic always return 0."""
     return 0
 
 
-@functools.lru_cache(maxsize=None)
 def getHeurstic(heur):
     """Generate dict of available heuristics and returns one.
 
