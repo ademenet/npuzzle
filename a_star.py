@@ -106,8 +106,8 @@ def solve(start, goal, args):
     # We use a PriorityQueue - build on min heap queue, it is only O(n*log(n))
     # in worth case to be sort.
     came_from = {}
-    g_score = {}
-    f_score = {}
+    g_score = {}            # Closed set
+    heap = PriorityQueue()  # Open set
     size = args['size']
     heuristicFunction = getHeurstic(args['heuristic'])
 
@@ -123,11 +123,11 @@ def solve(start, goal, args):
     start = tuple(start)
     came_from[str(start)] = None
     g_score[str(start)] = 0
-    f_score[str(start)] = heuristicFunction(start, goal, size)
-    bound =  f_score[str(start)]
-    algo = args['algo']
-    heap = PriorityQueue()
+    f_score = heuristicFunction(start, goal, size)
+    bound =  f_score
     heap.put(0, start)
+
+    algo = args['algo']
 
     stats = {'time_complexity': 1,  # Total number of states ever selected in open list
              'size_complexity': 0,  # Maximum number of states represented at the same time in lists
@@ -148,9 +148,9 @@ def solve(start, goal, args):
                     came_from[str(state)] = current
 
                     g_score[str(state)] = state_g_score
-                    f_score[str(state)] = state_g_score + heuristicFunction(state, goal, size)
+                    f_score = state_g_score + heuristicFunction(state, goal, size)
 
-                    heap.put(f_score[str(state)], state)
+                    heap.put(f_score, state)
                     stats['time_complexity'] += 1
                     stats['size_complexity'] = max(stats['size_complexity'], heap.length())
             elif algo == 'A-star':
@@ -158,9 +158,9 @@ def solve(start, goal, args):
                     came_from[str(state)] = current
 
                     g_score[str(state)] = state_g_score
-                    f_score[str(state)] = state_g_score + heuristicFunction(state, goal, size)
+                    f_score = state_g_score + heuristicFunction(state, goal, size)
 
-                    heap.put(f_score[str(state)], state)
+                    heap.put(f_score, state)
                     stats['time_complexity'] += 1
                     stats['size_complexity'] = max(stats['size_complexity'], heap.length())
             
